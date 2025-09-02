@@ -16,9 +16,21 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
-       {
+      {
         protocol: 'https',
-        hostname: 'picsum.photos',
+        hostname: 'efootballhub.net',
+        port: '',
+        pathname: '/images/efootball24/players/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ibb.co',
         port: '',
         pathname: '/**',
       }
