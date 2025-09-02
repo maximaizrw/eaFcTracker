@@ -1,14 +1,14 @@
 import type {Config} from 'tailwindcss';
 
 const tailwindColors = {
-  '--tw-potw-green': '#39FF14',
-  '--tw-potw-euro': '#E020E0',
-  '--tw-potw-euro-mar24': '#5603f2',
-  '--tw-potw-club-intl': '#b7a25b',
-  '--tw-tsubasa-pink': '#ec798f',
-  '--tw-startup-blue': '#005BBB',
-  '--tw-atalanta-green': '#2CFF05',
-  '--tw-spain-2010': '#be0100',
+  '--tw-potw-green': '135 94% 56%',
+  '--tw-potw-euro': '300 76% 53%',
+  '--tw-potw-euro-mar24': '261 96% 48%',
+  '--tw-potw-club-intl': '44 38% 54%',
+  '--tw-tsubasa-pink': '347 71% 76%',
+  '--tw-startup-blue': '211 100% 37%',
+  '--tw-atalanta-green': '111 100% 51%',
+  '--tw-spain-2010': '0 100% 37%',
 };
 
 export default {
