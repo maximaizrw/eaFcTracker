@@ -8,10 +8,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PlusCircle, Trash2, X, Wrench, Pencil, LineChart, Search, Zap, TrendingUp, Gem, Repeat, NotebookPen } from 'lucide-react';
+import { PlusCircle, Trash2, X, Wrench, Pencil, LineChart, Search, NotebookPen } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
-import type { Player, PlayerCard, Position, FlatPlayer, PlayerPerformance } from '@/lib/types';
+import type { Player, PlayerCard, Position, FlatPlayer } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
+import { PerformanceBadges } from './performance-badges';
 
 type PlayerTableProps = {
   players: FlatPlayer[];
@@ -114,55 +115,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         </div>
     );
 };
-
-const PerformanceBadges = ({ performance }: { performance: PlayerPerformance }) => {
-    if (!performance) return null;
-
-    return (
-        <div className="flex items-center gap-1.5">
-            {performance.isHotStreak && (
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>
-                            <TrendingUp className="h-4 w-4 text-orange-400" />
-                        </TooltipTrigger>
-                        <TooltipContent><p>En Racha (Mejor rendimiento reciente)</p></TooltipContent>
-                    </Tooltip>
-                 </TooltipProvider>
-            )}
-            {performance.isConsistent && (
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>
-                            <Repeat className="h-4 w-4 text-cyan-400" />
-                        </TooltipTrigger>
-                        <TooltipContent><p>Consistente (Valoraciones muy estables)</p></TooltipContent>
-                    </Tooltip>
-                 </TooltipProvider>
-            )}
-            {performance.isVersatile && (
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>
-                           <Gem className="h-4 w-4 text-purple-400" />
-                        </TooltipTrigger>
-                        <TooltipContent><p>Versátil (Rinde bien en múltiples posiciones)</p></TooltipContent>
-                    </Tooltip>
-                 </TooltipProvider>
-            )}
-             {performance.isPromising && (
-                 <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger>
-                            <Zap className="h-4 w-4 text-yellow-400" />
-                        </TooltipTrigger>
-                        <TooltipContent><p>Promesa (Pocos partidos, gran promedio)</p></TooltipContent>
-                    </Tooltip>
-                 </TooltipProvider>
-            )}
-        </div>
-    );
-}
 
 export function PlayerTable({
   players: flatPlayers,
