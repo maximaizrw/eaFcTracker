@@ -10,6 +10,7 @@ import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { PerformanceBadges } from './performance-badges';
 import { FootballPitch } from './football-pitch';
+import { cn } from '@/lib/utils';
 
 type IdealTeamDisplayProps = {
   teamSlots: IdealTeamSlot[];
@@ -21,17 +22,19 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
   if (!player || player.player.id.startsWith('placeholder')) {
     return (
       <div 
-        className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-center transition-all duration-200 border-2 border-dashed border-foreground/30 bg-background/20"
+        className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 flex flex-col items-center justify-center transition-all duration-200"
         style={style}
       >
-        <Shirt className="w-8 h-8 text-foreground/40" />
+        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-background/20 border-2 border-dashed border-foreground/30">
+          <Shirt className="w-8 h-8 text-foreground/40" />
+        </div>
       </div>
     );
   }
 
   return (
     <div 
-      className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-between text-center transition-all duration-200 p-1 group bg-card/80 backdrop-blur-sm border border-primary/40 shadow-lg"
+      className="absolute -translate-x-1/2 -translate-y-1/2 w-24 flex flex-col items-center justify-between text-center transition-all duration-200 group"
       style={style}
     >
         <TooltipProvider>
@@ -40,7 +43,7 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
                     <Button
                         variant="destructive"
                         size="icon"
-                        className="absolute -top-2 -right-2 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20"
+                        className="absolute -top-1 -right-1 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20"
                         onClick={() => onDiscard(player.card.id)}
                     >
                         <X className="h-3 w-3" />
@@ -52,26 +55,35 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
             </Tooltip>
         </TooltipProvider>
 
-      <div className="relative w-12 h-12 flex-shrink-0 mt-1">
+      <div className="relative w-16 h-16 flex-shrink-0 drop-shadow-lg">
         {player.card.imageUrl ? (
           <Image
             src={player.card.imageUrl}
             alt={player.card.name}
             fill
-            sizes="48px"
+            sizes="64px"
             className="object-contain"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-muted/40 rounded-full">
-            <Users className="w-7 h-7 text-muted-foreground/60" />
+            <Users className="w-8 h-8 text-muted-foreground/60" />
           </div>
         )}
       </div>
-      <div className="w-full mb-0.5 px-1 bg-background/50 rounded-b-md">
-        <p className="font-semibold text-xs text-foreground truncate w-full" title={player.player.name}>
+       <div className="w-full relative -mt-3 text-white">
+        <p 
+          className="font-bold text-base leading-tight text-primary bg-black/50 rounded-sm px-1 inline-block"
+          style={{textShadow: '0 1px 3px black'}}
+        >
+          {player.position}
+        </p>
+        <p 
+          className="font-semibold text-xs truncate w-full bg-black/50 rounded-sm px-1" 
+          title={player.player.name}
+          style={{textShadow: '0 1px 3px black'}}
+        >
           {player.player.name}
         </p>
-        <p className="font-bold text-base leading-tight text-primary">{player.position}</p>
       </div>
     </div>
   );
