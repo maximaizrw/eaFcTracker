@@ -178,7 +178,7 @@ export function PlayerTable({
                   ) : (
                     <div className="w-[40px] h-[40px] flex-shrink-0" />
                   )}
-                  <div className="flex-1">
+                  <div>
                     <div className="flex items-center gap-2">
                         <button 
                             onClick={() => onOpenPlayerDetail(flatPlayer)}
