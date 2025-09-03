@@ -1,16 +1,5 @@
 import type {Config} from 'tailwindcss';
 
-const tailwindColors = {
-  '--tw-potw-green': '#39FF14',
-  '--tw-potw-euro': '#E020E0',
-  '--tw-potw-euro-mar24': '#5603f2',
-  '--tw-potw-club-intl': '#b7a25b',
-  '--tw-tsubasa-pink': '#ec798f',
-  '--tw-startup-blue': '#005BBB',
-  '--tw-atalanta-green': '#2CFF05',
-  '--tw-spain-2010': '#be0100',
-};
-
 export default {
   darkMode: ['class'],
   content: [
@@ -23,7 +12,6 @@ export default {
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['"Space Grotesk"', 'sans-serif'],
-        code: ['monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -59,23 +47,6 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
-        },
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -108,10 +79,5 @@ export default {
   },
   plugins: [
     require('tailwindcss-animate'),
-    function({ addBase }: { addBase: (o: object) => void }) {
-      addBase({
-        ':root': tailwindColors,
-      });
-    },
   ],
 } satisfies Config;

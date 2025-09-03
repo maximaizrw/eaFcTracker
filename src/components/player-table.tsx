@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PlusCircle, Trash2, X, Wrench, Pencil, LineChart, Search, Zap, TrendingUp, Gem, Repeat, NotebookPen } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
-import { getCardStyle } from '@/lib/card-styles';
 import type { Player, PlayerCard, Position, FlatPlayer, PlayerPerformance } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
 
@@ -22,7 +21,6 @@ type PlayerTableProps = {
   onOpenEditPlayer: (player: Player) => void;
   onOpenPlayerDetail: (flatPlayer: FlatPlayer) => void;
   onViewImage: (url: string, name: string) => void;
-  onDeletePlayer: (playerId: string) => void;
   onDeleteCard: (playerId: string, cardId: string, position: Position) => void;
   onDeleteRating: (playerId: string, cardId: string, position: Position, ratingIndex: number) => void;
 };
@@ -174,7 +172,6 @@ export function PlayerTable({
   onOpenEditPlayer,
   onOpenPlayerDetail,
   onViewImage,
-  onDeletePlayer,
   onDeleteCard,
   onDeleteRating,
 }: PlayerTableProps) {
@@ -195,7 +192,7 @@ export function PlayerTable({
   return (
     <Table>
       <TableHeader>
-        <TableRow className="hover:bg-muted/50">
+        <TableRow>
           <TableHead className="w-[30%]">Jugador</TableHead>
           <TableHead>Estilo</TableHead>
           <TableHead>Prom.</TableHead>
@@ -209,30 +206,11 @@ export function PlayerTable({
           const { player, card, ratingsForPos, performance, hasTrainingBuild } = flatPlayer;
           const cardAverage = performance.stats.average;
           const cardMatches = performance.stats.matches;
-          const cardStyle = getCardStyle(card.name);
-
-          const rowStyle = cardStyle
-            ? ({ '--card-color': `hsl(var(--tw-${cardStyle.tailwindClass}))` } as React.CSSProperties)
-            : {};
-
-          const rowClasses = cn(
-            "transition-colors",
-            cardStyle ? `bg-[--card-color]/10 hover:bg-[--card-color]/20` : "hover:bg-muted/50"
-          );
-          
-          const specialTextClasses = cn(
-              "font-semibold",
-              cardStyle ? `text-[--card-color]` : ""
-          );
-          
-          const scoreGlowStyle = cardStyle
-            ? { textShadow: `0 0 6px var(--card-color)` }
-            : { textShadow: '0 0 8px hsl(var(--primary))' };
           
           const averageColorClass = getAverageColorClass(cardAverage);
 
           return (
-             <TableRow key={`${player.id}-${card.id}-${position}`} className={rowClasses} style={rowStyle}>
+             <TableRow key={`${player.id}-${card.id}-${position}`}>
               <TableCell>
                 <div className="flex items-center gap-3">
                   {card.imageUrl ? (
@@ -282,7 +260,7 @@ export function PlayerTable({
                            </Tooltip>
                         </TooltipProvider>
                     </div>
-                    <div className={cn("text-sm", cardStyle ? specialTextClasses : 'text-muted-foreground')}>{card.name}</div>
+                    <div className="text-sm text-muted-foreground">{card.name}</div>
                   </div>
                 </div>
               </TableCell>
@@ -292,7 +270,7 @@ export function PlayerTable({
                 ) : <span className="text-muted-foreground">-</span>}
               </TableCell>
               <TableCell>
-                 <div className={cn("text-xl font-bold", cardStyle ? specialTextClasses : averageColorClass)} style={scoreGlowStyle}>
+                 <div className={cn("text-xl font-bold", averageColorClass)}>
                   {formatAverage(cardAverage)}
                 </div>
               </TableCell>
@@ -303,7 +281,7 @@ export function PlayerTable({
                       const originalIndex = Math.max(0, ratingsForPos.length - 5) + index;
                       return (
                         <div key={originalIndex} className="group/rating relative">
-                          <Badge variant="default">
+                          <Badge variant="default" className="text-sm">
                             {rating.toFixed(1)}
                           </Badge>
                           <Button
@@ -330,7 +308,7 @@ export function PlayerTable({
                           aria-label={`Ver estadísticas de ${player.name}`}
                           onClick={() => onOpenPlayerDetail(flatPlayer)}
                       >
-                          <LineChart className="h-4 w-4 text-accent hover:text-accent/80" />
+                          <LineChart className="h-4 w-4 text-accent/80 hover:text-accent" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent><p>Ver estadísticas detalladas</p></TooltipContent>
@@ -350,7 +328,7 @@ export function PlayerTable({
                               style: card.style
                           })}
                       >
-                          <PlusCircle className="h-4 w-4 text-primary hover:text-primary/80" />
+                          <PlusCircle className="h-4 w-4 text-primary/80 hover:text-primary" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent><p>Añadir valoración</p></TooltipContent>
@@ -362,7 +340,7 @@ export function PlayerTable({
                         aria-label={`Editar carta ${card.name}`}
                         onClick={() => onOpenEditCard(player, card)}
                         >
-                        <Wrench className="h-4 w-4 text-muted-foreground hover:text-muted-foreground/80" />
+                        <Wrench className="h-4 w-4 text-muted-foreground/80 hover:text-muted-foreground" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent><p>Editar carta (nombre, estilo e imagen)</p></TooltipContent>
@@ -373,7 +351,7 @@ export function PlayerTable({
                         variant="ghost" size="icon" className="h-8 w-8 rounded-full"
                         aria-label={`Eliminar valoraciones de ${card.name} (${player.name}) para la posición ${position}`}
                         onClick={() => onDeleteCard(player.id, card.id, position)}>
-                        <Trash2 className="h-4 w-4 text-destructive hover:text-destructive/80" />
+                        <Trash2 className="h-4 w-4 text-destructive/80 hover:text-destructive" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent><p>Eliminar todas las valoraciones para esta posición</p></TooltipContent>

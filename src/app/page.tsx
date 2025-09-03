@@ -36,7 +36,7 @@ import { useToast } from "@/hooks/use-toast";
 
 import type { Player, PlayerCard as PlayerCardType, FormationStats, IdealTeamSlot, FlatPlayer, Position, PlayerPerformance } from '@/lib/types';
 import { positions } from '@/lib/types';
-import { PlusCircle, X, Star, Download, Trophy, RotateCcw } from 'lucide-react';
+import { PlusCircle, Star, Download, Trophy, RotateCcw } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
 import { generateIdealTeam } from '@/lib/team-generator';
 
@@ -50,7 +50,6 @@ export default function Home() {
     addRating,
     editCard,
     editPlayer,
-    deletePlayer,
     deleteCard,
     deleteRating,
     downloadBackup: downloadPlayersBackup,
@@ -312,7 +311,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-background">
        <AddRatingDialog
         open={isAddRatingDialogOpen}
         onOpenChange={setAddRatingDialogOpen}
@@ -378,9 +377,9 @@ export default function Home() {
       </AlertDialog>
 
 
-      <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-lg border-b border-white/10">
+      <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-md border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-3xl font-bold font-headline text-primary" style={{ textShadow: '0 0 10px hsl(var(--primary))' }}>
+          <h1 className="text-3xl font-bold font-headline text-primary">
             eFootTracker
           </h1>
           <div className="flex items-center gap-2">
@@ -395,18 +394,18 @@ export default function Home() {
 
       <main className="container mx-auto p-4 md:p-8">
         <Tabs defaultValue="DC" className="w-full" onValueChange={handleTabChange} value={activeTab}>
-          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 h-auto gap-1 bg-white/5">
+          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 h-auto gap-1">
             {positions.map((pos) => (
               <TabsTrigger key={pos} value={pos} className="py-2">
                 <PositionIcon position={pos} className="mr-2 h-5 w-5"/>
                 {pos}
               </TabsTrigger>
             ))}
-             <TabsTrigger value="formations" className="py-2 data-[state=active]:bg-accent/20 data-[state=active]:text-accent data-[state=active]:shadow-[0_0_10px_theme(colors.accent)]">
+             <TabsTrigger value="formations" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
                 <Trophy className="mr-2 h-5 w-5"/>
                 Formaciones
             </TabsTrigger>
-            <TabsTrigger value="ideal-11" className="py-2 data-[state=active]:bg-accent/20 data-[state=active]:text-accent data-[state=active]:shadow-[0_0_10px_theme(colors.accent)]">
+            <TabsTrigger value="ideal-11" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
                 <Star className="mr-2 h-5 w-5"/>
                 11 Ideal
             </TabsTrigger>
@@ -511,8 +510,8 @@ export default function Home() {
 
             return (
               <TabsContent key={pos} value={pos} className="mt-6">
-                <Card className="bg-card/60 border-white/10 overflow-hidden">
-                    <CardHeader className="p-4 border-b border-white/10">
+                <Card>
+                    <CardHeader>
                        <PlayerTable.Filters
                           searchTerm={searchTerm}
                           onSearchTermChange={setSearchTerm}
@@ -533,7 +532,6 @@ export default function Home() {
                       onOpenEditPlayer={handleOpenEditPlayer}
                       onOpenPlayerDetail={handleOpenPlayerDetail}
                       onViewImage={handleViewImage}
-                      onDeletePlayer={deletePlayer}
                       onDeleteCard={deleteCard}
                       onDeleteRating={deleteRating}
                     />
@@ -548,7 +546,7 @@ export default function Home() {
           })}
           
           <TabsContent value="ideal-11" className="mt-6">
-             <Card className="bg-card/60 border-white/10">
+             <Card>
                <CardHeader>
                  <CardTitle className="flex items-center gap-2 text-accent">
                    <Star />
@@ -592,5 +590,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

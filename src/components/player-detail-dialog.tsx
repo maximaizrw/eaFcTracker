@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LabelList } from 'recharts';
-import type { Player, Position, PlayerCard as PlayerCardType, TrainingBuild, TrainingAttribute, FlatPlayer } from "@/lib/types";
+import type { Position, TrainingBuild, TrainingAttribute, FlatPlayer } from "@/lib/types";
 import { trainingAttributes } from "@/lib/types";
 import {
   Dialog,
@@ -13,7 +13,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { useToast } from "@/hooks/use-toast";
 import { formatAverage, getPositionGroupColor, normalizeText } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -79,8 +78,6 @@ const TrainingBuildEditor = ({ build: initialBuild, onSave, onCancel }: { build:
 export function PlayerDetailDialog({ open, onOpenChange, flatPlayer, onSaveTrainingBuild }: PlayerDetailDialogProps) {
   const [selectedPosition, setSelectedPosition] = React.useState<Position | undefined>();
   const [isEditingBuild, setIsEditingBuild] = React.useState(false);
-  
-  const { toast } = useToast();
   
   React.useEffect(() => {
     if (open && flatPlayer) {

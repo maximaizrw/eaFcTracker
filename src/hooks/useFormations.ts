@@ -2,12 +2,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
+import { db } from '@/lib/firebase-config';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDocs, arrayUnion, query, orderBy, getDoc } from 'firebase/firestore';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import type { FormationStats, MatchResult, AddMatchFormValues, AddFormationFormValues, EditFormationFormValues } from '@/lib/types';
-import { playerStyles, positions } from '@/lib/types';
 
 const defaultSlots = Array(11).fill({ position: 'DC', styles: [] });
 
@@ -195,5 +194,3 @@ export function useFormations() {
 
   return { formations, loading, error, addFormation, editFormation, addMatchResult, deleteFormation, deleteMatchResult, downloadBackup };
 }
-
-    

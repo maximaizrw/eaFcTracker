@@ -2,12 +2,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase-config';
+import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
-import type { Player, PlayerCard, Position, PlayersByPosition, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild } from '@/lib/types';
-import { positions } from '@/lib/types';
+import type { Player, PlayerCard, Position, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild } from '@/lib/types';
 import { normalizeText } from '@/lib/utils';
 
 
@@ -171,17 +170,6 @@ export function usePlayers() {
     }
   };
 
-  const deletePlayer = async (playerId: string) => {
-    if (!db) return;
-    try {
-        await deleteDoc(doc(db, 'players', playerId));
-        toast({ title: "Jugador Eliminado", description: "El jugador ha sido eliminado." });
-    } catch (error) {
-        console.error("Error deleting player: ", error);
-        toast({ variant: "destructive", title: "Error al Eliminar", description: "No se pudo eliminar al jugador." });
-    }
-  };
-
   const deleteCard = async (playerId: string, cardId: string, position: Position) => {
     if (!db) return;
     const playerRef = doc(db, 'players', playerId);
@@ -287,5 +275,5 @@ export function usePlayers() {
     }
   };
 
-  return { players, loading, error, addRating, editCard, editPlayer, deletePlayer, deleteCard, deleteRating, saveTrainingBuild, downloadBackup };
+  return { players, loading, error, addRating, editCard, editPlayer, deleteCard, deleteRating, saveTrainingBuild, downloadBackup };
 }

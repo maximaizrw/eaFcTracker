@@ -109,7 +109,7 @@ const MatchHistory = ({ matches, formationId, onDeleteMatchResult }: { matches: 
   )
 }
 
-const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onViewImage, onDeleteMatchResult, onGenerateIdealTeam }: Omit<FormationsDisplayProps, 'formations'>) => {
+const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onViewImage, onDeleteMatchResult, onGenerateIdealTeam }: Omit<FormationsDisplayProps, 'formations'> & { onGenerateIdealTeam: (id: string) => void }) => {
     const stats = calculateStats(formation.matches);
     const effectivenessColor = 
       stats.effectiveness >= 66 ? 'text-green-500' :
@@ -123,7 +123,7 @@ const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onVie
 
     return (
       <Card key={formation.id} className="flex flex-col">
-        <CardHeader className="p-4 border-b">
+        <CardHeader>
           <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-xl">
@@ -148,7 +148,7 @@ const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onVie
               )}
           </div>
         </CardHeader>
-        <CardContent className="p-4 flex-grow">
+        <CardContent className="flex-grow">
           <div className="grid grid-cols-1 gap-2">
              {formation.imageUrl && (
                 <button 
@@ -228,7 +228,7 @@ const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onVie
                 onDeleteMatchResult={onDeleteMatchResult}
             />
         </CardContent>
-        <CardFooter className="p-4 border-t grid grid-cols-2 gap-2">
+        <CardFooter className="grid grid-cols-2 gap-2">
             <Button variant="secondary" onClick={() => onGenerateIdealTeam(formation.id)}>
                 <Star className="mr-2 h-4 w-4" />
                 Generar 11 Ideal
@@ -262,7 +262,7 @@ const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onVie
     );
 };
 
-const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGenerateIdealTeam }: Omit<FormationsDisplayProps, 'formations' | 'onViewImage' | 'onDeleteMatchResult'>) => {
+const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGenerateIdealTeam }: Omit<FormationsDisplayProps, 'formations' | 'onViewImage' | 'onDeleteMatchResult' | 'onAddMatch'> & { onAddMatch: (id: string, name: string) => void }) => {
     const stats = calculateStats(formation.matches);
      const effectivenessColor = 
       stats.effectiveness >= 66 ? 'text-green-500' :
@@ -270,7 +270,7 @@ const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGene
       stats.total > 0 ? 'text-red-500' : 'text-muted-foreground';
 
     return (
-        <div className="flex items-center justify-between p-4 bg-card hover:bg-muted/50 transition-colors rounded-lg border">
+        <div className="flex items-center justify-between p-4 bg-card rounded-lg hover:bg-muted/50 transition-colors border">
             <div className="flex-1 overflow-hidden">
                 <p className="text-lg font-semibold truncate">{formation.name}</p>
                 <p className="text-sm text-muted-foreground truncate">{formation.creator ? `${formation.creator} - ${formation.playStyle}` : formation.playStyle}</p>
@@ -318,7 +318,7 @@ const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGene
 };
 
 export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, onEdit, onViewImage, onDeleteMatchResult, onGenerateIdealTeam }: FormationsDisplayProps) {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
 
   const sortedFormations = [...formations].sort((a, b) => {
     const statsA = calculateStats(a.matches);
@@ -328,7 +328,7 @@ export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, o
 
   if (formations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center text-center p-10 bg-card rounded-lg shadow-sm border border-dashed">
+      <div className="flex flex-col items-center justify-center text-center p-10 bg-card rounded-lg border border-dashed">
         <Trophy className="h-12 w-12 text-muted-foreground mb-4" />
         <p className="text-lg font-medium text-muted-foreground">Todavía no has añadido ninguna formación.</p>
         <p className="text-sm text-muted-foreground">Haz clic en 'Añadir Formación' para empezar a registrar su rendimiento.</p>

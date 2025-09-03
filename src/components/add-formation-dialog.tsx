@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import type { AddFormationFormValues, FormationSlot } from "@/lib/types";
+import type { AddFormationFormValues } from "@/lib/types";
 import { formationPlayStyles, FormationSlotSchema } from "@/lib/types";
 import { VisualFormationEditor } from "./visual-formation-editor";
 import { formationPresets } from "@/lib/formation-presets";
@@ -191,7 +191,7 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                                 <FormLabel>Editor Visual</FormLabel>
                                 <FormControl>
                                     <VisualFormationEditor 
-                                        value={field.value as FormationSlot[]} 
+                                        value={field.value} 
                                         onChange={field.onChange} 
                                     />
                                 </FormControl>
@@ -243,7 +243,7 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                     </div>
                 </div>
             </ScrollArea>
-            <DialogFooter className="flex-shrink-0 bg-background/95 py-4 border-t border-border -mx-6 px-6">
+            <DialogFooter className="flex-shrink-0 bg-background/95 py-4 border-t -mx-6 px-6">
                 <Button type="submit">Guardar Formación</Button>
             </DialogFooter>
           </form>

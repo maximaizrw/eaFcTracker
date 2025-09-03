@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { formatAverage, cn } from '@/lib/utils';
 import { Users, Shirt, X, TrendingUp, Repeat, Gem, Zap } from 'lucide-react';
-import { getCardStyle } from '@/lib/card-styles';
 import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
@@ -69,31 +68,18 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
   if (!player || player.player.id.startsWith('placeholder')) {
     return (
       <div 
-        className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-center transition-all duration-200 border-2 border-dashed border-black/20 bg-black/10"
+        className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-center transition-all duration-200 border-2 border-dashed border-foreground/30 bg-background/20"
         style={style}
       >
-        <Shirt className="w-8 h-8 text-black/30" />
+        <Shirt className="w-8 h-8 text-foreground/40" />
       </div>
     );
   }
 
-  const cardStyleInfo = getCardStyle(player.card.name);
-  const cardColorStyle = cardStyleInfo
-    ? ({ '--card-color': `hsl(var(--tw-${cardStyleInfo.tailwindClass}))` } as React.CSSProperties)
-    : {};
-  
-  const scoreGlowStyle = cardStyleInfo
-    ? { textShadow: `0 0 8px var(--card-color)` }
-    : { textShadow: '0 0 8px hsl(var(--primary))' };
-
   return (
     <div 
-      className={cn(
-        "absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-between text-center transition-all duration-200 p-1 group",
-        "bg-card/80 backdrop-blur-sm border",
-        cardStyleInfo ? "bg-[--card-color]/10 border-[--card-color]/40" : "border-primary/40"
-      )}
-      style={{...style, ...cardColorStyle}}
+      className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-between text-center transition-all duration-200 p-1 group bg-card/80 backdrop-blur-sm border border-primary/40"
+      style={style}
     >
         <TooltipProvider>
             <Tooltip>
@@ -128,11 +114,8 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
           </div>
         )}
         <div 
-            className={cn(
-                "absolute -top-1.5 -left-1.5 font-bold text-white rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center border-2 text-sm h-7 w-7",
-                cardStyleInfo ? "border-[--card-color]" : "border-primary"
-            )}
-            style={scoreGlowStyle}
+            className="absolute -top-1.5 -left-1.5 font-bold text-white rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center border-2 border-primary text-sm h-7 w-7"
+            style={{ textShadow: '0 0 8px hsl(var(--primary))' }}
         >
            {formatAverage(player.average)}
         </div>
@@ -150,28 +133,18 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
 const SubstitutePlayerRow = ({ player, onDiscard }: { player: IdealTeamPlayer | null, onDiscard: (cardId: string) => void }) => {
   if (!player || player.player.id.startsWith('placeholder')) {
     return (
-      <div className="flex items-center gap-3 p-2 rounded-lg bg-black/5 border-2 border-dashed border-black/10 h-16">
-        <div className="w-10 h-10 flex items-center justify-center bg-muted/20 rounded-lg">
-          <Shirt className="w-6 h-6 text-black/40" />
+      <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border-2 border-dashed border-foreground/30 h-16">
+        <div className="w-10 h-10 flex items-center justify-center bg-muted rounded-lg">
+          <Shirt className="w-6 h-6 text-foreground/40" />
         </div>
         <div className="font-semibold text-muted-foreground">Vacante</div>
       </div>
     );
   }
 
-  const cardStyleInfo = getCardStyle(player.card.name);
-  const cardColorStyle = cardStyleInfo
-    ? ({ '--card-color': `hsl(var(--tw-${cardStyleInfo.tailwindClass}))` } as React.CSSProperties)
-    : {};
-  const specialTextClasses = cardStyleInfo ? `text-[--card-color]` : "text-primary";
-
   return (
     <div 
-        className={cn(
-            "group flex items-center gap-3 p-2 rounded-lg bg-card/60 border border-border h-16 relative",
-            cardStyleInfo && "bg-[--card-color]/10 border-[--card-color]/40"
-        )}
-        style={cardColorStyle}
+        className="group flex items-center gap-3 p-2 rounded-lg bg-card h-16 relative border"
     >
       <div className="w-16 font-bold text-lg text-center text-muted-foreground">{player.position}</div>
       <div className="relative w-10 h-10 flex-shrink-0">
@@ -192,11 +165,11 @@ const SubstitutePlayerRow = ({ player, onDiscard }: { player: IdealTeamPlayer | 
             </p>
             <PerformanceBadges performance={player.performance} />
         </div>
-        <p className={cn("text-xs truncate", specialTextClasses)} title={player.card.name}>
+        <p className="text-xs truncate text-primary" title={player.card.name}>
           {player.card.name}
         </p>
       </div>
-      <Badge variant="secondary" className="text-xs">{player.card.style}</Badge>
+      <Badge variant="secondary">{player.card.style}</Badge>
       <div className="font-bold text-lg w-12 text-center">{formatAverage(player.average)}</div>
       <TooltipProvider>
             <Tooltip>
@@ -249,14 +222,14 @@ export function IdealTeamDisplay({ teamSlots, formation, onDiscardPlayer }: Idea
     <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="lg:col-span-2">
         <div 
-            className="relative w-full aspect-video bg-field-gradient rounded-lg border border-primary/50 shadow-[0_0_20px_theme(colors.primary/0.2)] overflow-hidden"
+            className="relative w-full aspect-video bg-green-800/20 rounded-lg border-2 border-green-500/50 shadow-[0_0_20px_theme(colors.primary/0.2)] overflow-hidden"
         >
           {/* Field markings */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 md:w-48 md:h-48 border-2 border-black/10 rounded-full pointer-events-none" />
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full h-px bg-black/10 pointer-events-none" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-[calc(100%-40px)] md:w-[calc(100%-80px)] border-l-2 border-r-2 border-black/10 pointer-events-none">
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 h-14 w-28 md:h-20 md:w-40 border-b-2 border-l-2 border-r-2 border-black/10 rounded-b-lg md:rounded-b-xl pointer-events-none" />
-             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-14 w-28 md:h-20 md:w-40 border-t-2 border-l-2 border-r-2 border-black/10 rounded-t-lg md:rounded-t-xl pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 md:w-48 md:h-48 border-2 border-white/20 rounded-full pointer-events-none" />
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full h-px bg-white/20 pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-[calc(100%-40px)] md:w-[calc(100%-80px)] border-l-2 border-r-2 border-white/20 pointer-events-none">
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 h-14 w-28 md:h-20 md:w-40 border-b-2 border-l-2 border-r-2 border-white/20 rounded-b-lg md:rounded-b-xl pointer-events-none" />
+             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-14 w-28 md:h-20 md:w-40 border-t-2 border-l-2 border-r-2 border-white/20 rounded-t-lg md:rounded-t-xl pointer-events-none" />
           </div>
 
           {teamSlots.map((slot, index) => {
