@@ -9,6 +9,7 @@ import { Users, Shirt, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { PerformanceBadges } from './performance-badges';
+import { FootballPitch } from './football-pitch';
 
 type IdealTeamDisplayProps = {
   teamSlots: IdealTeamSlot[];
@@ -30,7 +31,7 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
 
   return (
     <div 
-      className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-between text-center transition-all duration-200 p-1 group bg-card/80 backdrop-blur-sm border border-primary/40"
+      className="absolute -translate-x-1/2 -translate-y-1/2 w-20 h-24 rounded-lg flex flex-col items-center justify-between text-center transition-all duration-200 p-1 group bg-card/80 backdrop-blur-sm border border-primary/40 shadow-lg"
       style={style}
     >
         <TooltipProvider>
@@ -173,17 +174,7 @@ export function IdealTeamDisplay({ teamSlots, formation, onDiscardPlayer }: Idea
   return (
     <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="lg:col-span-2">
-        <div 
-            className="relative w-full aspect-video bg-green-800/20 rounded-lg border-2 border-green-500/50 shadow-[0_0_20px_theme(colors.primary/0.2)] overflow-hidden"
-        >
-          {/* Field markings */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 md:w-48 md:h-48 border-2 border-white/20 rounded-full pointer-events-none" />
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full h-px bg-white/20 pointer-events-none" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-full w-[calc(100%-40px)] md:w-[calc(100%-80px)] border-l-2 border-r-2 border-white/20 pointer-events-none">
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 h-14 w-28 md:h-20 md:w-40 border-b-2 border-l-2 border-r-2 border-white/20 rounded-b-lg md:rounded-b-xl pointer-events-none" />
-             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-14 w-28 md:h-20 md:w-40 border-t-2 border-l-2 border-r-2 border-white/20 rounded-t-lg md:rounded-t-xl pointer-events-none" />
-          </div>
-
+        <FootballPitch>
           {teamSlots.map((slot, index) => {
              const formationSlot = formation.slots[index];
              const style: React.CSSProperties = {
@@ -192,7 +183,7 @@ export function IdealTeamDisplay({ teamSlots, formation, onDiscardPlayer }: Idea
              };
              return <PlayerToken key={slot.starter?.card.id || `starter-${index}`} player={slot.starter} style={style} onDiscard={onDiscardPlayer} />;
           })}
-        </div>
+        </FootballPitch>
       </div>
       
       <div className="lg:col-span-1">
