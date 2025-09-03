@@ -66,18 +66,12 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
             <Users className="w-7 h-7 text-muted-foreground/60" />
           </div>
         )}
-        <div 
-            className="absolute -top-1.5 -left-1.5 font-bold text-white rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center border-2 border-primary text-sm h-7 w-7"
-            style={{ textShadow: '0 0 8px hsl(var(--primary))' }}
-        >
-           {formatAverage(player.average)}
-        </div>
       </div>
-      <div className="w-full mb-0.5">
+      <div className="w-full mb-0.5 px-1 bg-background/50 rounded-b-md">
         <p className="font-semibold text-xs text-foreground truncate w-full" title={player.player.name}>
           {player.player.name}
         </p>
-        <p className="font-bold text-base leading-tight">{player.position}</p>
+        <p className="font-bold text-base leading-tight text-primary">{player.position}</p>
       </div>
     </div>
   );
