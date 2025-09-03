@@ -36,7 +36,7 @@ import { useToast } from "@/hooks/use-toast";
 
 import type { Player, PlayerCard as PlayerCardType, FormationStats, IdealTeamSlot, FlatPlayer, Position, PlayerPerformance } from '@/lib/types';
 import { positions } from '@/lib/types';
-import { PlusCircle, Trash2, X, Star, Bot, Download, Search, Trophy, NotebookPen, RotateCcw } from 'lucide-react';
+import { PlusCircle, X, Star, Download, Trophy, RotateCcw } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
 import { generateIdealTeam } from '@/lib/team-generator';
 
@@ -312,7 +312,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-transparent">
        <AddRatingDialog
         open={isAddRatingDialogOpen}
         onOpenChange={setAddRatingDialogOpen}
@@ -378,9 +378,9 @@ export default function Home() {
       </AlertDialog>
 
 
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b">
+      <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-lg border-b border-white/10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-3xl font-bold font-headline text-primary">
+          <h1 className="text-3xl font-bold font-headline text-primary" style={{ textShadow: '0 0 10px hsl(var(--primary))' }}>
             eFootTracker
           </h1>
           <div className="flex items-center gap-2">
@@ -395,7 +395,7 @@ export default function Home() {
 
       <main className="container mx-auto p-4 md:p-8">
         <Tabs defaultValue="DC" className="w-full" onValueChange={handleTabChange} value={activeTab}>
-          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 h-auto gap-1">
+          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 h-auto gap-1 bg-white/5">
             {positions.map((pos) => (
               <TabsTrigger key={pos} value={pos} className="py-2">
                 <PositionIcon position={pos} className="mr-2 h-5 w-5"/>
@@ -511,8 +511,8 @@ export default function Home() {
 
             return (
               <TabsContent key={pos} value={pos} className="mt-6">
-                <Card>
-                    <CardHeader className="p-4 border-b">
+                <Card className="bg-card/60 border-white/10 overflow-hidden">
+                    <CardHeader className="p-4 border-b border-white/10">
                        <PlayerTable.Filters
                           searchTerm={searchTerm}
                           onSearchTermChange={setSearchTerm}
@@ -548,7 +548,7 @@ export default function Home() {
           })}
           
           <TabsContent value="ideal-11" className="mt-6">
-             <Card>
+             <Card className="bg-card/60 border-white/10">
                <CardHeader>
                  <CardTitle className="flex items-center gap-2 text-accent">
                    <Star />
@@ -592,3 +592,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

@@ -4,38 +4,6 @@
 
 @layer base {
   :root {
-    --background: 220 13% 96%; /* #F0F2F5 */
-    --foreground: 222 47% 11%; /* Dark Blue/Black */
-
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    --primary: 199 76% 53%; /* #29ABE2 */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 22 91% 54%; /* #F26419 */
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 210 40% 92%;
-    --input: 210 40% 94%;
-    --ring: 199 76% 53%;
-
-    --radius: 0.75rem;
-  }
-
-  .dark {
     --background: 240 10% 3.9%; /* Deep Dark Blue/Black */
     --foreground: 0 0% 98%; /* Almost White */
 
@@ -45,8 +13,8 @@
     --popover: 240 10% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 199 76% 53%; /* #29ABE2 */
-    --primary-foreground: 0 0% 100%;
+    --primary: 90 100% 50%; /* Electric Green */
+    --primary-foreground: 90 100% 10%;
 
     --secondary: 240 5% 12%;
     --secondary-foreground: 0 0% 98%;
@@ -54,7 +22,7 @@
     --muted: 240 5% 12%;
     --muted-foreground: 0 0% 65%;
 
-    --accent: 22 91% 54%; /* #F26419 */
+    --accent: 320 100% 50%; /* Electric Fuchsia/Pink */
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84.2% 60.2%;
@@ -62,7 +30,9 @@
 
     --border: 240 5% 15%;
     --input: 240 5% 15%;
-    --ring: 199 76% 53%;
+    --ring: 90 100% 50%;
+
+    --radius: 0.75rem;
   }
 }
 
@@ -72,17 +42,15 @@
   }
   body {
     @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    background-image: radial-gradient(circle at top left, hsl(var(--accent), 0.1) 0%, transparent 25%),
+                radial-gradient(circle at bottom right, hsl(var(--primary), 0.1) 0%, transparent 25%);
+    min-height: 100vh;
   }
 }
 
 @layer components {
   .bg-field-gradient {
-    background-color: #e1f5fe;
-    background-image: 
-      radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0) 70%),
-      linear-gradient(to bottom, #e1f5fe, #d4effa);
-  }
-  .dark .bg-field-gradient {
     background-color: #0d4f21;
     background-image: 
       radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%),
