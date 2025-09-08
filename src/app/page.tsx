@@ -39,6 +39,7 @@ import { positions } from '@/lib/types';
 import { PlusCircle, Star, Download, Trophy, RotateCcw } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
 import { generateIdealTeam } from '@/lib/team-generator';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -266,7 +267,8 @@ export default function Home() {
         return (
           <Button onClick={() => setAddFormationDialogOpen(true)}>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Añadir Formación
+            <span className="hidden sm:inline">Añadir Formación</span>
+            <span className="inline sm:hidden">Formación</span>
           </Button>
         );
       case 'ideal-11':
@@ -275,7 +277,8 @@ export default function Home() {
         return (
             <Button onClick={() => handleOpenAddRating({ position: activeTab as Position })}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Añadir Valoración
+              <span className="hidden sm:inline">Añadir Valoración</span>
+              <span className="inline sm:hidden">Valoración</span>
             </Button>
         );
     }
@@ -379,13 +382,13 @@ export default function Home() {
 
       <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-md border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-3xl font-bold font-headline text-primary">
+          <h1 className="text-xl sm:text-3xl font-bold font-headline text-primary">
             eFootTracker
           </h1>
           <div className="flex items-center gap-2">
-            <Button onClick={handleDownloadBackup} variant="outline">
-                <Download className="mr-2 h-4 w-4" />
-                Descargar Backup
+            <Button onClick={handleDownloadBackup} variant="outline" size="sm">
+                <Download className="mr-0 sm:mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Descargar Backup</span>
             </Button>
             {getHeaderButtons()}
           </div>
@@ -394,22 +397,25 @@ export default function Home() {
 
       <main className="container mx-auto p-4 md:p-8">
         <Tabs defaultValue="DC" className="w-full" onValueChange={handleTabChange} value={activeTab}>
-          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-8 h-auto gap-1">
-            {positions.map((pos) => (
-              <TabsTrigger key={pos} value={pos} className="py-2">
-                <PositionIcon position={pos} className="mr-2 h-5 w-5"/>
-                {pos}
+          <ScrollArea className="w-full whitespace-nowrap">
+            <TabsList className="grid-flow-col">
+              {positions.map((pos) => (
+                <TabsTrigger key={pos} value={pos} className="py-2">
+                  <PositionIcon position={pos} className="mr-2 h-5 w-5"/>
+                  {pos}
+                </TabsTrigger>
+              ))}
+              <TabsTrigger value="formations" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
+                  <Trophy className="mr-2 h-5 w-5"/>
+                  Formaciones
               </TabsTrigger>
-            ))}
-             <TabsTrigger value="formations" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
-                <Trophy className="mr-2 h-5 w-5"/>
-                Formaciones
-            </TabsTrigger>
-            <TabsTrigger value="ideal-11" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
-                <Star className="mr-2 h-5 w-5"/>
-                11 Ideal
-            </TabsTrigger>
-          </TabsList>
+              <TabsTrigger value="ideal-11" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
+                  <Star className="mr-2 h-5 w-5"/>
+                  11 Ideal
+              </TabsTrigger>
+            </TabsList>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
           
           <TabsContent value="formations" className="mt-6">
             <FormationsDisplay
@@ -590,3 +596,4 @@ export default function Home() {
     </div>
   );
 }
+

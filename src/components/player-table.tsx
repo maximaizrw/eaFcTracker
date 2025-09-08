@@ -142,181 +142,186 @@ export function PlayerTable({
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[30%]">Jugador</TableHead>
-          <TableHead>Estilo</TableHead>
-          <TableHead>Prom.</TableHead>
-          <TableHead>Partidos</TableHead>
-          <TableHead className="w-[35%]">Valoraciones</TableHead>
-          <TableHead className="text-right">Acciones</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {flatPlayers.map((flatPlayer) => {
-          const { player, card, ratingsForPos, performance, hasTrainingBuild } = flatPlayer;
-          const cardAverage = performance.stats.average;
-          const cardMatches = performance.stats.matches;
-          
-          const averageColorClass = getAverageColorClass(cardAverage);
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[30%] min-w-[200px]">Jugador</TableHead>
+            <TableHead>Estilo</TableHead>
+            <TableHead>Prom.</TableHead>
+            <TableHead>Partidos</TableHead>
+            <TableHead className="w-[35%] min-w-[200px]">Valoraciones</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {flatPlayers.map((flatPlayer) => {
+            const { player, card, ratingsForPos, performance, hasTrainingBuild } = flatPlayer;
+            const cardAverage = performance.stats.average;
+            const cardMatches = performance.stats.matches;
+            
+            const averageColorClass = getAverageColorClass(cardAverage);
 
-          return (
-             <TableRow key={`${player.id}-${card.id}-${position}`}>
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  {card.imageUrl ? (
-                    <button onClick={() => onViewImage(card.imageUrl!, `${player.name} - ${card.name}`)} className="focus:outline-none focus:ring-2 focus:ring-ring rounded">
-                      <Image
-                        src={card.imageUrl}
-                        alt={card.name}
-                        width={40}
-                        height={40}
-                        className="bg-transparent object-contain"
-                      />
-                    </button>
-                  ) : (
-                    <div className="w-[40px] h-[40px] flex-shrink-0" />
-                  )}
-                  <div>
-                    <div className="flex items-center gap-2">
-                        <button 
-                            onClick={() => onOpenPlayerDetail(flatPlayer)}
-                            className="font-medium text-base hover:underline"
-                        >
-                            {player.name}
-                        </button>
-                        {hasTrainingBuild && (
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger>
-                                        <NotebookPen className="h-4 w-4 text-accent" />
-                                    </TooltipTrigger>
-                                    <TooltipContent><p>Build de Entrenamiento Guardada</p></TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
-                        )}
-                        <PerformanceBadges performance={performance} />
-                        <TooltipProvider>
-                           <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost" size="icon" className="h-6 w-6 rounded-full"
-                                        aria-label={`Editar jugador ${player.name}`}
-                                        onClick={() => onOpenEditPlayer(player)}
-                                        >
-                                        <Pencil className="h-3 w-3 text-muted-foreground/60 hover:text-muted-foreground" />
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent><p>Editar nombre del jugador</p></TooltipContent>
-                           </Tooltip>
-                        </TooltipProvider>
-                    </div>
-                    <div className="text-sm text-muted-foreground">{card.name}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>
-                {card.style && card.style !== "Ninguno" ? (
-                  <Badge variant="secondary">{card.style}</Badge>
-                ) : <span className="text-muted-foreground">-</span>}
-              </TableCell>
-              <TableCell>
-                 <div className={cn("text-xl font-bold", averageColorClass)}>
-                  {formatAverage(cardAverage)}
-                </div>
-              </TableCell>
-              <TableCell className="text-center">{cardMatches}</TableCell>
-              <TableCell>
-                <div className="flex flex-wrap items-center gap-2">
-                  {ratingsForPos.slice(-5).map((rating, index) => {
-                      const originalIndex = Math.max(0, ratingsForPos.length - 5) + index;
-                      return (
-                        <div key={originalIndex} className="group/rating relative">
-                          <Badge variant="default" className="text-sm">
-                            {rating.toFixed(1)}
-                          </Badge>
-                          <Button
-                            size="icon" variant="destructive"
-                            className="absolute -top-2 -right-2 h-4 w-4 rounded-full opacity-0 group-hover/rating:opacity-100 transition-opacity z-10"
-                            onClick={() => onDeleteRating(player.id, card.id, position, originalIndex)}
-                            aria-label={`Eliminar valoración ${rating}`}
+            return (
+              <TableRow key={`${player.id}-${card.id}-${position}`}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    {card.imageUrl ? (
+                      <button onClick={() => onViewImage(card.imageUrl!, `${player.name} - ${card.name}`)} className="focus:outline-none focus:ring-2 focus:ring-ring rounded">
+                        <Image
+                          src={card.imageUrl}
+                          alt={card.name}
+                          width={40}
+                          height={40}
+                          className="bg-transparent object-contain"
+                        />
+                      </button>
+                    ) : (
+                      <div className="w-[40px] h-[40px] flex-shrink-0" />
+                    )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                          <button 
+                              onClick={() => onOpenPlayerDetail(flatPlayer)}
+                              className="font-medium text-base hover:underline"
                           >
-                            <X className="h-3 w-3" />
+                              {player.name}
+                          </button>
+                          {hasTrainingBuild && (
+                              <TooltipProvider>
+                                  <Tooltip>
+                                      <TooltipTrigger>
+                                          <NotebookPen className="h-4 w-4 text-accent" />
+                                      </TooltipTrigger>
+                                      <TooltipContent><p>Build de Entrenamiento Guardada</p></TooltipContent>
+                                  </Tooltip>
+                              </TooltipProvider>
+                          )}
+                          <PerformanceBadges performance={performance} />
+                          <TooltipProvider>
+                            <Tooltip>
+                                  <TooltipTrigger asChild>
+                                      <Button
+                                          variant="ghost" size="icon" className="h-6 w-6 rounded-full"
+                                          aria-label={`Editar jugador ${player.name}`}
+                                          onClick={() => onOpenEditPlayer(player)}
+                                          >
+                                          <Pencil className="h-3 w-3 text-muted-foreground/60 hover:text-muted-foreground" />
+                                      </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent><p>Editar nombre del jugador</p></TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                      </div>
+                      <div className="text-sm text-muted-foreground">{card.name}</div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {card.style && card.style !== "Ninguno" ? (
+                    <Badge variant="secondary">{card.style}</Badge>
+                  ) : <span className="text-muted-foreground">-</span>}
+                </TableCell>
+                <TableCell>
+                  <div className={cn("text-xl font-bold", averageColorClass)}>
+                    {formatAverage(cardAverage)}
+                  </div>
+                </TableCell>
+                <TableCell className="text-center">{cardMatches}</TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {ratingsForPos.slice(-5).map((rating, index) => {
+                        const originalIndex = Math.max(0, ratingsForPos.length - 5) + index;
+                        return (
+                          <div key={originalIndex} className="group/rating relative">
+                            <Badge variant="default" className="text-sm">
+                              {rating.toFixed(1)}
+                            </Badge>
+                            <Button
+                              size="icon" variant="destructive"
+                              className="absolute -top-2 -right-2 h-4 w-4 rounded-full opacity-0 group-hover/rating:opacity-100 transition-opacity z-10"
+                              onClick={() => onDeleteRating(player.id, card.id, position, originalIndex)}
+                              aria-label={`Eliminar valoración ${rating}`}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 rounded-full"
+                              aria-label={`Ver estadísticas de ${player.name}`}
+                              onClick={() => onOpenPlayerDetail(flatPlayer)}
+                          >
+                              <LineChart className="h-4 w-4 text-accent/80 hover:text-accent" />
                           </Button>
-                        </div>
-                      );
-                    })}
-                </div>
-              </TableCell>
-              <TableCell className="text-right">
-                <TooltipProvider>
-                   <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full"
-                          aria-label={`Ver estadísticas de ${player.name}`}
-                          onClick={() => onOpenPlayerDetail(flatPlayer)}
-                      >
-                          <LineChart className="h-4 w-4 text-accent/80 hover:text-accent" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Ver estadísticas detalladas</p></TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full"
-                          aria-label={`Añadir valoración a ${player.name} (${card.name})`}
-                          onClick={() => onOpenAddRating({
-                              playerId: player.id,
-                              playerName: player.name,
-                              cardName: card.name,
-                              position: position,
-                              style: card.style
-                          })}
-                      >
-                          <PlusCircle className="h-4 w-4 text-primary/80 hover:text-primary" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Añadir valoración</p></TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost" size="icon" className="h-8 w-8 rounded-full"
-                        aria-label={`Editar carta ${card.name}`}
-                        onClick={() => onOpenEditCard(player, card)}
-                        >
-                        <Wrench className="h-4 w-4 text-muted-foreground/80 hover:text-muted-foreground" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Editar carta (nombre, estilo e imagen)</p></TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost" size="icon" className="h-8 w-8 rounded-full"
-                        aria-label={`Eliminar valoraciones de ${card.name} (${player.name}) para la posición ${position}`}
-                        onClick={() => onDeleteCard(player.id, card.id, position)}>
-                        <Trash2 className="h-4 w-4 text-destructive/80 hover:text-destructive" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent><p>Eliminar todas las valoraciones para esta posición</p></TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Ver estadísticas detalladas</p></TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 rounded-full"
+                              aria-label={`Añadir valoración a ${player.name} (${card.name})`}
+                              onClick={() => onOpenAddRating({
+                                  playerId: player.id,
+                                  playerName: player.name,
+                                  cardName: card.name,
+                                  position: position,
+                                  style: card.style
+                              })}
+                          >
+                              <PlusCircle className="h-4 w-4 text-primary/80 hover:text-primary" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Añadir valoración</p></TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost" size="icon" className="h-8 w-8 rounded-full"
+                            aria-label={`Editar carta ${card.name}`}
+                            onClick={() => onOpenEditCard(player, card)}
+                            >
+                            <Wrench className="h-4 w-4 text-muted-foreground/80 hover:text-muted-foreground" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Editar carta (nombre, estilo e imagen)</p></TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost" size="icon" className="h-8 w-8 rounded-full"
+                            aria-label={`Eliminar valoraciones de ${card.name} (${player.name}) para la posición ${position}`}
+                            onClick={() => onDeleteCard(player.id, card.id, position)}>
+                            <Trash2 className="h-4 w-4 text-destructive/80 hover:text-destructive" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent><p>Eliminar todas las valoraciones para esta posición</p></TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 
 PlayerTable.Filters = Filters;
 PlayerTable.Pagination = Pagination;
+

@@ -4,13 +4,13 @@
 import type { IdealTeamPlayer, IdealTeamSlot, FormationStats, Position } from '@/lib/types';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { formatAverage } from '@/lib/utils';
-import { Users, Shirt, X } from 'lucide-react';
+import { Users, Shirt, X, Crown } from 'lucide-react';
 import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { PerformanceBadges } from './performance-badges';
 import { FootballPitch } from './football-pitch';
 import { cn } from '@/lib/utils';
+import { Card } from './ui/card';
 
 type IdealTeamDisplayProps = {
   teamSlots: IdealTeamSlot[];
@@ -44,7 +44,7 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
                         variant="destructive"
                         size="icon"
                         className="absolute -top-1 -right-1 h-5 w-5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-20"
-                        onClick={() => onDiscard(player.card.id)}
+                        onClick={(e) => { e.stopPropagation(); onDiscard(player.card.id); }}
                     >
                         <X className="h-3 w-3" />
                     </Button>
@@ -71,19 +71,14 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
         )}
       </div>
        <div className="w-full relative -mt-3 text-white">
-        <p 
-          className="font-bold text-base leading-tight text-primary bg-black/50 rounded-sm px-1 inline-block"
-          style={{textShadow: '0 1px 3px black'}}
-        >
-          {player.position}
-        </p>
-        <p 
-          className="font-semibold text-xs truncate w-full bg-black/50 rounded-sm px-1" 
-          title={player.player.name}
-          style={{textShadow: '0 1px 3px black'}}
-        >
-          {player.player.name}
-        </p>
+        <div className="inline-block bg-black/50 rounded-sm px-1.5 py-0.5" style={{textShadow: '0 1px 3px black'}}>
+            <p className="font-bold text-sm leading-tight text-primary">
+            {player.position}
+            </p>
+            <p className="font-semibold text-xs truncate w-full" title={player.player.name}>
+            {player.player.name}
+            </p>
+        </div>
       </div>
     </div>
   );
@@ -92,44 +87,37 @@ const PlayerToken = ({ player, style, onDiscard }: { player: IdealTeamPlayer | n
 const SubstitutePlayerRow = ({ player, onDiscard }: { player: IdealTeamPlayer | null, onDiscard: (cardId: string) => void }) => {
   if (!player || player.player.id.startsWith('placeholder')) {
     return (
-      <div className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border-2 border-dashed border-foreground/30 h-16">
-        <div className="w-10 h-10 flex items-center justify-center bg-muted rounded-lg">
+      <Card className="flex items-center gap-3 p-2 rounded-lg bg-background/50 border-2 border-dashed border-foreground/30 h-20">
+        <div className="w-16 h-full flex items-center justify-center bg-muted rounded-md">
           <Shirt className="w-6 h-6 text-foreground/40" />
         </div>
         <div className="font-semibold text-muted-foreground">Vacante</div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div 
-        className="group flex items-center gap-3 p-2 rounded-lg bg-card h-16 relative border"
-    >
-      <div className="w-16 font-bold text-lg text-center text-muted-foreground">{player.position}</div>
-      <div className="relative w-10 h-10 flex-shrink-0">
+    <Card className="group relative flex items-center gap-2 p-2 rounded-lg bg-card h-20 overflow-hidden">
+      <div className="absolute top-0 right-0 p-1.5 leading-none text-xs font-bold bg-accent text-accent-foreground rounded-bl-lg">
+          {player.position}
+      </div>
+      <div className="relative w-16 h-full flex-shrink-0">
         {player.card.imageUrl && (
           <Image
             src={player.card.imageUrl}
             alt={player.card.name}
             fill
-            sizes="40px"
-            className="object-contain"
+            sizes="64px"
+            className="object-contain -translate-y-1 scale-110"
           />
         )}
       </div>
       <div className="flex-grow overflow-hidden">
-        <div className="flex items-center gap-2">
-            <p className="font-semibold text-foreground truncate" title={player.player.name}>
-                {player.player.name}
-            </p>
-            <PerformanceBadges performance={player.performance} />
-        </div>
-        <p className="text-xs truncate text-primary" title={player.card.name}>
-          {player.card.name}
+        <p className="font-semibold text-base text-foreground truncate" title={player.player.name}>
+            {player.player.name}
         </p>
+        <PerformanceBadges performance={player.performance} className="mt-1" />
       </div>
-      <Badge variant="secondary">{player.card.style}</Badge>
-      <div className="font-bold text-lg w-12 text-center">{formatAverage(player.average)}</div>
       <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
@@ -147,11 +135,10 @@ const SubstitutePlayerRow = ({ player, onDiscard }: { player: IdealTeamPlayer | 
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
-    </div>
+    </Card>
   );
 };
 
-// Define the tactical order for substitutes
 const substituteOrder: Position[] = [
     'PT', 'DFC', 'LI', 'LD', 'MCD', 'MC', 'MDI', 'MDD', 'MO', 'EXI', 'EXD', 'SD', 'DC'
 ];
@@ -178,8 +165,9 @@ export function IdealTeamDisplay({ teamSlots, formation, onDiscardPlayer }: Idea
     });
 
   return (
-    <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-2">
+    <div className="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="xl:col-span-2">
+        <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2"><Crown /> Titulares</h3>
         <FootballPitch>
           {teamSlots.map((slot, index) => {
              const formationSlot = formation.slots[index];
@@ -192,9 +180,9 @@ export function IdealTeamDisplay({ teamSlots, formation, onDiscardPlayer }: Idea
         </FootballPitch>
       </div>
       
-      <div className="lg:col-span-1">
-        <h3 className="text-xl font-semibold mb-4 text-center">Banquillo de Suplentes</h3>
-        <div className="space-y-2">
+      <div className="xl:col-span-1">
+        <h3 className="text-xl font-semibold mb-4 text-center flex items-center justify-center gap-2"><Users /> Banquillo</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-2">
           {substitutes.map((sub, index) => (
              <SubstitutePlayerRow key={sub?.card.id || `sub-${index}`} player={sub} onDiscard={onDiscardPlayer}/>
           ))}
@@ -203,3 +191,4 @@ export function IdealTeamDisplay({ teamSlots, formation, onDiscardPlayer }: Idea
     </div>
   );
 }
+

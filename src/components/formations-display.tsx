@@ -275,7 +275,7 @@ const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGene
                 <p className="text-lg font-semibold truncate">{formation.name}</p>
                 <p className="text-sm text-muted-foreground truncate">{formation.creator ? `${formation.creator} - ${formation.playStyle}` : formation.playStyle}</p>
             </div>
-            <div className="flex items-center gap-6 mx-6 flex-shrink-0">
+            <div className="hidden sm:flex items-center gap-6 mx-6 flex-shrink-0">
                 <div className="text-center w-20">
                     <p className="text-xl font-bold">{stats.wins}-{stats.draws}-{stats.losses}</p>
                     <p className="text-xs text-muted-foreground">V-E-D</p>
@@ -288,11 +288,11 @@ const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGene
             <div className="flex items-center gap-2 flex-shrink-0">
                 <Button size="sm" variant="secondary" onClick={() => onGenerateIdealTeam(formation.id)}>
                     <Star className="mr-2 h-4 w-4" />
-                    11 Ideal
+                    <span className="hidden md:inline">11 Ideal</span>
                 </Button>
                 <Button size="sm" onClick={() => onAddMatch(formation.id, formation.name)}>
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    Partido
+                    <span className="hidden md:inline">Partido</span>
                 </Button>
                 <TooltipProvider>
                   <Tooltip>
@@ -350,7 +350,7 @@ export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, o
         </div>
         
         {viewMode === 'grid' ? (
-             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {sortedFormations.map((formation) => (
                     <FormationCard 
                         key={formation.id}
@@ -381,3 +381,4 @@ export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, o
     </div>
   );
 }
+
