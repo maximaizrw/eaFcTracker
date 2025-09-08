@@ -398,7 +398,7 @@ export default function Home() {
       <main className="container mx-auto p-4 md:p-8">
         <Tabs defaultValue="DC" className="w-full" onValueChange={handleTabChange} value={activeTab}>
           <ScrollArea className="w-full whitespace-nowrap rounded-md">
-            <TabsList className="w-full sm:w-auto sm:inline-flex h-auto justify-start">
+            <TabsList>
               {positions.map((pos) => (
                 <TabsTrigger key={pos} value={pos} className="py-2">
                   <PositionIcon position={pos} className="mr-2 h-5 w-5"/>
@@ -596,7 +596,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
-
-    

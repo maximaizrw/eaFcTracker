@@ -314,5 +314,3 @@ PlayerTable.Filters = Filters;
 PlayerTable.Pagination = Pagination;
 
     
-
-    

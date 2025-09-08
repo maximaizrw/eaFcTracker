@@ -74,3 +74,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* This is to make the tabs list scrollable on mobile */
+  [role="tablist"] {
+    @apply flex-nowrap;
+  }
+}
