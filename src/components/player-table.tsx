@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PlusCircle, Trash2, X, Wrench, Pencil, LineChart, Search, NotebookPen } from 'lucide-react';
+import { PlusCircle, Trash2, X, Wrench, Pencil, NotebookPen, Search } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
 import type { Player, PlayerCard, Position, FlatPlayer } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
@@ -165,19 +165,19 @@ export function PlayerTable({
             return (
               <TableRow key={`${player.id}-${card.id}-${position}`}>
                 <TableCell className="p-2 md:p-4">
-                  <div className="flex items-center gap-2 md:gap-3">
+                  <div className="flex items-center gap-2">
                     {card.imageUrl ? (
-                      <button onClick={() => onViewImage(card.imageUrl!, `${player.name} - ${card.name}`)} className="focus:outline-none focus:ring-2 focus:ring-ring rounded">
+                      <button onClick={() => onViewImage(card.imageUrl!, `${player.name} - ${card.name}`)} className="focus:outline-none focus:ring-2 focus:ring-ring rounded-full">
                         <Image
                           src={card.imageUrl}
                           alt={card.name}
                           width={40}
                           height={40}
-                          className="bg-transparent object-contain"
+                          className="bg-transparent object-contain w-8 h-8 md:w-10 md:h-10"
                         />
                       </button>
                     ) : (
-                      <div className="w-[40px] h-[40px] flex-shrink-0" />
+                      <div className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0" />
                     )}
                     <div>
                       <div className="flex items-center gap-1 md:gap-2">
@@ -199,7 +199,7 @@ export function PlayerTable({
                           )}
                           <PerformanceBadges performance={performance} className="hidden md:flex" />
                       </div>
-                      <div className="text-xs md:text-sm text-muted-foreground">{card.name}</div>
+                      <div className="text-xs text-muted-foreground">{card.name}</div>
                     </div>
                   </div>
                 </TableCell>
@@ -209,7 +209,7 @@ export function PlayerTable({
                   ) : <span className="text-muted-foreground">-</span>}
                 </TableCell>
                 <TableCell>
-                  <div className={cn("text-base md:text-xl font-bold", averageColorClass)}>
+                  <div className={cn("text-base md:text-lg font-bold", averageColorClass)}>
                     {formatAverage(cardAverage)}
                   </div>
                 </TableCell>
@@ -236,7 +236,7 @@ export function PlayerTable({
                       })}
                   </div>
                 </TableCell>
-                <TableCell className="text-right p-1 md:p-4">
+                <TableCell className="text-right p-1 md:p-2">
                   <div className="flex items-center justify-end">
                     <TooltipProvider>
                       <Tooltip>
@@ -254,7 +254,7 @@ export function PlayerTable({
                                   style: card.style
                               })}
                           >
-                              <PlusCircle className="h-4 w-4 text-primary/80 hover:text-primary" />
+                              <PlusCircle className="h-5 w-5 md:h-4 md:w-4 text-primary/80 hover:text-primary" />
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent><p>Añadir valoración</p></TooltipContent>
@@ -312,5 +312,7 @@ export function PlayerTable({
 
 PlayerTable.Filters = Filters;
 PlayerTable.Pagination = Pagination;
+
+    
 
     
