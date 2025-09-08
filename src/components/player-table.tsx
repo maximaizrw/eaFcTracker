@@ -147,10 +147,10 @@ export function PlayerTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[30%] min-w-[200px]">Jugador</TableHead>
-            <TableHead>Estilo</TableHead>
+            <TableHead className="hidden md:table-cell">Estilo</TableHead>
             <TableHead>Prom.</TableHead>
             <TableHead>Partidos</TableHead>
-            <TableHead className="w-[35%] min-w-[200px]">Valoraciones</TableHead>
+            <TableHead className="w-[35%] min-w-[200px] hidden md:table-cell">Valoraciones</TableHead>
             <TableHead className="text-right">Acciones</TableHead>
           </TableRow>
         </TableHeader>
@@ -217,7 +217,7 @@ export function PlayerTable({
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   {card.style && card.style !== "Ninguno" ? (
                     <Badge variant="secondary">{card.style}</Badge>
                   ) : <span className="text-muted-foreground">-</span>}
@@ -228,7 +228,7 @@ export function PlayerTable({
                   </div>
                 </TableCell>
                 <TableCell className="text-center">{cardMatches}</TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   <div className="flex flex-wrap items-center gap-2">
                     {ratingsForPos.slice(-5).map((rating, index) => {
                         const originalIndex = Math.max(0, ratingsForPos.length - 5) + index;
@@ -324,4 +324,3 @@ export function PlayerTable({
 
 PlayerTable.Filters = Filters;
 PlayerTable.Pagination = Pagination;
-
