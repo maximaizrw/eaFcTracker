@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect } from "react";
@@ -30,14 +31,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { PlayerStyle } from "@/lib/types";
-import { playerStyles } from "@/lib/types";
+import type { PlayerStyle, League } from "@/lib/types";
+import { playerStyles, leagues } from "@/lib/types";
 
 const formSchema = z.object({
   playerId: z.string(),
   cardId: z.string(),
   currentCardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
   currentStyle: z.enum(playerStyles),
+  league: z.enum(leagues).optional(),
   imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
 });
 
@@ -57,7 +59,10 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
 
   useEffect(() => {
     if (open && initialData) {
-      form.reset(initialData);
+      form.reset({
+          ...initialData,
+          league: initialData.league || 'Sin Liga',
+      });
     }
   }, [open, initialData, form]);
   
@@ -105,6 +110,28 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
                     <SelectContent>
                       {playerStyles.map((style) => (
                         <SelectItem key={style} value={style}>{style}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="league"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Liga</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona una liga" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {leagues.map((league) => (
+                        <SelectItem key={league} value={league}>{league}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

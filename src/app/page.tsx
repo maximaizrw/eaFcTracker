@@ -34,8 +34,8 @@ import { usePlayers } from '@/hooks/usePlayers';
 import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Player, PlayerCard as PlayerCardType, FormationStats, IdealTeamSlot, FlatPlayer, Position, PlayerPerformance } from '@/lib/types';
-import { positions } from '@/lib/types';
+import type { Player, PlayerCard as PlayerCardType, FormationStats, IdealTeamSlot, FlatPlayer, Position, PlayerPerformance, League } from '@/lib/types';
+import { positions, leagues } from '@/lib/types';
 import { PlusCircle, Star, Download, Trophy, RotateCcw } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
 import { generateIdealTeam } from '@/lib/team-generator';
@@ -91,6 +91,7 @@ export default function Home() {
   const [selectedFlatPlayer, setSelectedFlatPlayer] = useState<FlatPlayer | null>(null);
   
   const [selectedFormationId, setSelectedFormationId] = useState<string | undefined>(undefined);
+  const [selectedLeague, setSelectedLeague] = useState<League | 'all'>('all');
   const [idealTeam, setIdealTeam] = useState<IdealTeamSlot[]>([]);
   const [discardedCardIds, setDiscardedCardIds] = useState<Set<string>>(new Set());
 
@@ -132,6 +133,7 @@ export default function Home() {
         cardId: card.id,
         currentCardName: card.name,
         currentStyle: card.style,
+        league: card.league || 'Sin Liga',
         imageUrl: card.imageUrl || '',
     });
     setEditCardDialogOpen(true);
@@ -186,7 +188,7 @@ export default function Home() {
       return;
     }
     
-    const newTeam = generateIdealTeam(players, formation, discardedCardIds);
+    const newTeam = generateIdealTeam(players, formation, discardedCardIds, selectedLeague);
 
     setIdealTeam(newTeam);
     if (document.activeElement instanceof HTMLElement) {
@@ -200,6 +202,10 @@ export default function Home() {
   
   const handleFormationSelectionChange = (id: string) => {
     setSelectedFormationId(id);
+  };
+
+  const handleLeagueChange = (league: League | 'all') => {
+    setSelectedLeague(league);
   };
   
   const handleGoToIdealTeam = (formationId: string) => {
@@ -397,8 +403,8 @@ export default function Home() {
 
       <main className="container mx-auto p-4 md:p-8">
         <Tabs defaultValue="DC" className="w-full" onValueChange={handleTabChange} value={activeTab}>
-          <ScrollArea className="w-full whitespace-nowrap rounded-md">
-            <TabsList>
+           <ScrollArea className="w-full whitespace-nowrap rounded-md border">
+            <TabsList className="inline-flex w-max">
               {positions.map((pos) => (
                 <TabsTrigger key={pos} value={pos} className="py-2">
                   <PositionIcon position={pos} className="mr-2 h-5 w-5"/>
@@ -567,6 +573,9 @@ export default function Home() {
                     formations={formations}
                     selectedFormationId={selectedFormationId}
                     onFormationChange={handleFormationSelectionChange} 
+                    leagues={['all', ...leagues]}
+                    selectedLeague={selectedLeague}
+                    onLeagueChange={handleLeagueChange}
                   />
                   <div className="flex items-center gap-4 mt-6">
                     <Button onClick={handleGenerateTeam} disabled={!selectedFormationId}>

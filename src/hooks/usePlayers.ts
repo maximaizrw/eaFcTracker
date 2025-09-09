@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase-config';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
-import type { Player, PlayerCard, Position, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild } from '@/lib/types';
+import type { Player, PlayerCard, Position, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild, League } from '@/lib/types';
 import { normalizeText } from '@/lib/utils';
 
 
@@ -35,6 +35,7 @@ export function usePlayers() {
                     ...card,
                     id: card.id || uuidv4(), // Ensure card has an ID
                     style: card.style || 'Ninguno',
+                    league: card.league || 'Sin Liga',
                     imageUrl: card.imageUrl || '',
                     ratingsByPosition: card.ratingsByPosition || {},
                     trainingBuilds: card.trainingBuilds || {}
@@ -70,7 +71,7 @@ export function usePlayers() {
   }, [toast]);
 
   const addRating = async (values: AddRatingFormValues) => {
-    const { playerName, cardName, position, rating, style } = values;
+    const { playerName, cardName, position, rating, style, league } = values;
     let { playerId } = values;
 
     if (!db) {
@@ -101,11 +102,13 @@ export function usePlayers() {
           if (!card.ratingsByPosition) card.ratingsByPosition = {};
           if (!card.ratingsByPosition[position]) card.ratingsByPosition[position] = [];
           card.ratingsByPosition[position]!.push(rating);
+          card.league = league || card.league || 'Sin Liga';
         } else {
           card = { 
               id: uuidv4(), 
               name: cardName, 
               style: style, 
+              league: league || 'Sin Liga',
               imageUrl: '', 
               ratingsByPosition: { [position]: [rating] },
               trainingBuilds: {}
@@ -120,6 +123,7 @@ export function usePlayers() {
               id: uuidv4(), 
               name: cardName, 
               style: style, 
+              league: league || 'Sin Liga',
               imageUrl: '', 
               ratingsByPosition: { [position]: [rating] },
               trainingBuilds: {}
@@ -148,6 +152,7 @@ export function usePlayers() {
       if (cardToUpdate) {
           cardToUpdate.name = values.currentCardName;
           cardToUpdate.style = values.currentStyle;
+          cardToUpdate.league = values.league || 'Sin Liga';
           cardToUpdate.imageUrl = values.imageUrl || '';
           
           await updateDoc(playerRef, { cards: newCards });

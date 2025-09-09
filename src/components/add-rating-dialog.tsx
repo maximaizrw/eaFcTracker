@@ -46,8 +46,8 @@ import {
 } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider";
 import { cn, getAvailableStylesForPosition } from "@/lib/utils";
-import type { Player, Position, PlayerStyle } from "@/lib/types";
-import { positions, playerStyles } from "@/lib/types";
+import type { Player, Position, PlayerStyle, League } from "@/lib/types";
+import { positions, playerStyles, leagues } from "@/lib/types";
 
 const formSchema = z.object({
   playerId: z.string().optional(),
@@ -55,6 +55,7 @@ const formSchema = z.object({
   cardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
   position: z.enum(positions),
   style: z.enum(playerStyles),
+  league: z.enum(leagues).optional(),
   rating: z.number().min(1).max(10),
 });
 
@@ -83,6 +84,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
       cardName: "Carta Base",
       position: "DC",
       style: "Ninguno",
+      league: "Sin Liga",
       rating: 5,
     },
   });
@@ -100,6 +102,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         cardName: 'Carta Base',
         position: 'DC' as Position,
         style: 'Ninguno' as PlayerStyle,
+        league: 'Sin Liga' as League,
         rating: 5,
       };
       
@@ -136,6 +139,9 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         // The card's style is invalid for the new position, so we reset it.
         form.setValue('style', 'Ninguno', { shouldValidate: true });
         setIsStyleDisabled(false);
+      }
+      if (card.league) {
+        form.setValue('league', card.league);
       }
     } else {
       // It's a new card, so style is editable.
@@ -294,6 +300,28 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                       </Command>
                     </PopoverContent>
                   </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="league"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Liga</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={isQuickAdd}>
+                    <FormControl>
+                    <SelectTrigger className={cn(isQuickAdd && "text-muted-foreground")}>
+                        <SelectValue placeholder="Selecciona una liga" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {leagues.map((league) => (
+                        <SelectItem key={league} value={league}>{league}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

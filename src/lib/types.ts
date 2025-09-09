@@ -8,6 +8,9 @@ export type PlayerStyle = typeof playerStyles[number];
 export const positions = ['PT', 'DFC', 'LI', 'LD', 'MCD', 'MC', 'MDI', 'MDD', 'MO', 'EXI', 'EXD', 'SD', 'DC'] as const;
 export type Position = typeof positions[number];
 
+export const leagues = ['Sin Liga', 'Liga Española', 'English League', 'Italian League', 'Ligue 1', 'Bundesliga', 'Liga Portuguesa', 'Dutch League', 'Internacional', 'J.League', 'American League'] as const;
+export type League = typeof leagues[number];
+
 export const trainingAttributes = [
     'shooting', 'passing', 'dribbling', 'dexterity', 
     'lower_body_strength', 'aerial_strength', 'defending', 
@@ -25,6 +28,7 @@ export type PlayerCard = {
   id: string;
   name: string; // e.g., "Highlight", "Player of the Week"
   style: PlayerStyle;
+  league?: League;
   imageUrl?: string;
   ratingsByPosition: { [key in Position]?: number[] };
   trainingBuilds?: { [key in Position]?: TrainingBuild };
@@ -42,6 +46,7 @@ export type AddRatingFormValues = {
     cardName: string;
     position: Position;
     style: PlayerStyle;
+    league?: League;
     rating: number;
 }
 
@@ -50,6 +55,7 @@ export type EditCardFormValues = {
     cardId: string;
     currentCardName: string;
     currentStyle: PlayerStyle;
+    league?: League;
     imageUrl?: string;
 };
 
@@ -59,7 +65,7 @@ export type EditPlayerFormValues = {
 };
 
 export type PlayersByPosition = {
-  [key in Position]: Player[];
+  [key in Position]?: number;
 };
 
 export type Formation = {

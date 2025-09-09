@@ -1,5 +1,5 @@
 
-import type { Player, FormationStats, IdealTeamPlayer, Position, IdealTeamSlot, PlayerCard, PlayerPerformance } from './types';
+import type { Player, FormationStats, IdealTeamPlayer, Position, IdealTeamSlot, PlayerCard, PlayerPerformance, League } from './types';
 import { calculateStats } from './utils';
 
 type CandidatePlayer = {
@@ -22,12 +22,18 @@ type CandidatePlayer = {
 export function generateIdealTeam(
   players: Player[],
   formation: FormationStats,
-  discardedCardIds: Set<string> = new Set()
+  discardedCardIds: Set<string> = new Set(),
+  league: League | 'all' = 'all'
 ): IdealTeamSlot[] {
   
   // Create a flat list of all possible player-card-position combinations
   const allPlayerCandidates: CandidatePlayer[] = players.flatMap(player =>
     (player.cards || []).flatMap(card => {
+      // Filter by league if a specific league is selected
+      if (league !== 'all' && card.league !== league) {
+        return [];
+      }
+
       const highPerfPositions = new Set<Position>();
       for (const p in card.ratingsByPosition) {
           const positionKey = p as Position;
