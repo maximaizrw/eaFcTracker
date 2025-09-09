@@ -381,4 +381,3 @@ export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, o
     </div>
   );
 }
-

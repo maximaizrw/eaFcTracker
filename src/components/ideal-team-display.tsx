@@ -191,4 +191,3 @@ export function IdealTeamDisplay({ teamSlots, formation, onDiscardPlayer }: Idea
     </div>
   );
 }
-
