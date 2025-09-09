@@ -166,6 +166,26 @@ export function generateIdealTeam(
     slot.substitute = createTeamPlayer(substituteCandidate, formationSlot.position);
   });
 
+  // --- FALLBACK FOR EMPTY SUBSTITUTE SLOTS ---
+  finalTeamSlots.forEach((slot, index) => {
+    if (!slot.substitute) {
+        // Find best available player from the correct league (if specified) who is not yet used, regardless of position
+        const fallbackCandidates = allPlayerCandidates
+            .filter(p => (league === 'all' || p.card.league === league))
+            .sort((a, b) => b.average - a.average);
+
+        const fallbackPlayer = findBestPlayer(fallbackCandidates);
+        
+        if (fallbackPlayer) {
+            usedPlayerIds.add(fallbackPlayer.player.id);
+            usedCardIds.add(fallbackPlayer.card.id);
+            // The assigned position is the original intended substitute position
+            slot.substitute = createTeamPlayer(fallbackPlayer, formation.slots[index].position);
+        }
+    }
+  });
+
+
   // Fill any empty slots with placeholders.
   const placeholderPerformance: PlayerPerformance = {
         stats: { average: 0, matches: 0, stdDev: 0 },
