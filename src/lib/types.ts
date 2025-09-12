@@ -2,13 +2,31 @@
 import type { Player as PlayerType, PlayerCard as PlayerCardType, Position as PositionType } from './types';
 import * as z from "zod";
 
-export const playerStyles = ['Ninguno', 'Cazagoles', 'Señuelo', 'Hombre de área', 'Hombre objetivo', 'Creador de juego', 'El destructor', 'Portero defensivo', 'Portero ofensivo', 'Atacante extra', 'Lateral defensivo', 'Lateral Ofensivo', 'Lateral finalizador', 'Omnipresente', 'Medio escudo', 'Organizador', 'Jugador de huecos', 'Especialista en centros', 'Extremo móvil', 'Creador de jugadas', 'Diez Clasico', 'Segundo delantero', 'Extremo prolífico'] as const;
+// EAFC PlayStyles
+export const playerStyles = [
+    'Básico', 'Rematador', 'Tirador Preciso', 'Cabeza Potente', 'Tiro Potente', 'Tiro de Calidad',
+    'Pase Preciso', 'Pase con Efecto', 'Pase Balístico', 'Tiki Taka', 'Pase Largo', 'Bloqueo',
+    'Intercepción', 'Implacable', 'Zapador', 'Primer Toque', 'Regate Veloz', 'Regate Hábil',
+    'Vaselina', 'Trilero', 'Paso Rápido', 'Acrobático', 'Juego Aéreo', 'Trivela',
+    'Barridas', 'Anticipación', 'Leñero', 'Infranqueable', 'Saque Largo', 'Parada Rápida', 'Salida Rápida'
+] as const;
+
 export type PlayerStyle = typeof playerStyles[number];
 
-export const positions = ['PT', 'DFC', 'LI', 'LD', 'MCD', 'MC', 'MDI', 'MDD', 'MO', 'EXI', 'EXD', 'SD', 'DC'] as const;
+// EAFC Positions
+export const positions = ['GK', 'RWB', 'RB', 'CB', 'LB', 'LWB', 'CDM', 'RM', 'CM', 'LM', 'CAM', 'RF', 'CF', 'LF', 'RW', 'ST', 'LW'] as const;
 export type Position = typeof positions[number];
 
-export const leagues = ['Sin Liga', 'Liga Española', 'English League', 'Italian League', 'Ligue 1', 'Bundesliga', 'Liga Portuguesa', 'Dutch League', 'Internacional', 'J.League', 'American League'] as const;
+// EAFC Leagues
+export const leagues = [
+    'Sin Liga', 'LALIGA EA SPORTS', 'Premier League', 'Serie A TIM', 'Bundesliga', 'Ligue 1 Uber Eats',
+    'MLS', 'ROSHN Saudi League', 'Liga Portugal', 'Eredivisie', 'Google Pixel Frauen-Bundesliga',
+    'Barclays Womens Super League', 'D1 Arkema', 'National Womens Soccer League', 'Liga F',
+    'Libertadores', 'Sudamericana', 'Superliga', 'Scottish Premiership', 'SSE Airtricity League', 'K-League 1',
+    'Belgium Pro League', 'Credit Suisse Super League', 'Ekstraklasa', '3. Liga', 'Trendyol Super Lig',
+    'Raiffeisen Superleague', 'Allsvenskan', 'Eliteserien', ' cinch Premiership'
+] as const;
+
 export type League = typeof leagues[number];
 
 export const trainingAttributes = [
@@ -26,7 +44,7 @@ export type PositionGroup = 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Forward'
 
 export type PlayerCard = {
   id: string;
-  name: string; // e.g., "Highlight", "Player of the Week"
+  name: string; // e.g., "TOTY", "Future Stars"
   style: PlayerStyle;
   league?: League;
   imageUrl?: string;
@@ -88,11 +106,12 @@ export type IdealTeamSlot = {
 // --- Tipos para Formaciones ---
 
 export const formationPlayStyles = [
-  'Contraataque rápido', 
-  'Contraataque largo', 
-  'Por las bandas', 
-  'Balones largos', 
-  'Posesión'
+  'Equilibrado', 
+  'Rearme Rápido', 
+  'Balones Largos', 
+  'Posesión',
+  'Presión Constante',
+  'Presión Fuerte al Perder Balón'
 ] as const;
 export type FormationPlayStyle = typeof formationPlayStyles[number];
 

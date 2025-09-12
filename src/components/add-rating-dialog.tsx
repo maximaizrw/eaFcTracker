@@ -82,8 +82,8 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
       playerId: undefined,
       playerName: "",
       cardName: "Carta Base",
-      position: "DC",
-      style: "Ninguno",
+      position: "ST",
+      style: "Básico",
       league: "Sin Liga",
       rating: 5,
     },
@@ -100,8 +100,8 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         playerId: undefined,
         playerName: '',
         cardName: 'Carta Base',
-        position: 'DC' as Position,
-        style: 'Ninguno' as PlayerStyle,
+        position: 'ST' as Position,
+        style: 'Básico' as PlayerStyle,
         league: 'Sin Liga' as League,
         rating: 5,
       };
@@ -137,7 +137,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         setIsStyleDisabled(true);
       } else {
         // The card's style is invalid for the new position, so we reset it.
-        form.setValue('style', 'Ninguno', { shouldValidate: true });
+        form.setValue('style', 'Básico', { shouldValidate: true });
         setIsStyleDisabled(false);
       }
       if (card.league) {
@@ -148,7 +148,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
       setIsStyleDisabled(false);
       const currentStyle = form.getValues('style');
       if (!availableStyles.includes(currentStyle)) {
-        form.setValue('style', 'Ninguno');
+        form.setValue('style', 'Básico');
       }
     }
   }, [playerIdValue, playerNameValue, cardNameValue, positionValue, players, form]);
@@ -353,11 +353,11 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
               name="style"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Estilo de Juego</FormLabel>
+                  <FormLabel>PlayStyle</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value} disabled={isQuickAdd || isStyleDisabled}>
                     <FormControl>
                     <SelectTrigger className={cn((isQuickAdd || isStyleDisabled) && "text-muted-foreground")}>
-                        <SelectValue placeholder="Selecciona un estilo" />
+                        <SelectValue placeholder="Selecciona un PlayStyle" />
                     </SelectTrigger>
                     </FormControl>
                     <SelectContent>

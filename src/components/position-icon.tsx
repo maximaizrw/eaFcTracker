@@ -1,25 +1,18 @@
 import type { LucideProps } from 'lucide-react';
 import { Target, Users, Shield, HandMetal } from 'lucide-react';
 import type { Position } from '@/lib/types';
+import { getPositionGroup } from '@/lib/utils';
 
 export const PositionIcon = ({ position, ...props }: { position: Position } & LucideProps) => {
-  switch (position) {
-    case 'PT':
+  const group = getPositionGroup(position);
+  switch (group) {
+    case 'Goalkeeper':
       return <HandMetal {...props} />;
-    case 'DFC':
-    case 'LI':
-    case 'LD':
+    case 'Defender':
       return <Shield {...props} />;
-    case 'MCD':
-    case 'MC':
-    case 'MDI':
-    case 'MDD':
-    case 'MO':
+    case 'Midfielder':
       return <Users {...props} />;
-    case 'EXI':
-    case 'EXD':
-    case 'SD':
-    case 'DC':
+    case 'Forward':
       return <Target {...props} />;
     default:
       return null;

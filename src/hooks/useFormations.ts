@@ -8,7 +8,7 @@ import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import type { FormationStats, MatchResult, AddMatchFormValues, AddFormationFormValues, EditFormationFormValues } from '@/lib/types';
 
-const defaultSlots = Array(11).fill({ position: 'DC', styles: [] });
+const defaultSlots = Array(11).fill({ position: 'ST', styles: [] });
 
 export function useFormations() {
   const [formations, setFormations] = useState<FormationStats[]>([]);
@@ -24,7 +24,7 @@ export function useFormations() {
       return;
     }
 
-    const q = query(collection(db, "formations"), orderBy("name", "asc"));
+    const q = query(collection(db, "eafc_formations"), orderBy("name", "asc"));
 
     const unsub = onSnapshot(q, (snapshot) => {
       try {
@@ -80,7 +80,7 @@ export function useFormations() {
             secondaryImageUrl: values.secondaryImageUrl || '',
             sourceUrl: values.sourceUrl || '',
         };
-        await addDoc(collection(db, 'formations'), newFormation);
+        await addDoc(collection(db, 'eafc_formations'), newFormation);
         toast({ title: "Formación Añadida", description: `La formación "${values.name}" se ha guardado.` });
     } catch (error) {
         console.error("Error adding formation: ", error);
@@ -95,7 +95,7 @@ export function useFormations() {
   const editFormation = async (values: EditFormationFormValues) => {
     if (!db) return;
     try {
-      const formationRef = doc(db, 'formations', values.id);
+      const formationRef = doc(db, 'eafc_formations', values.id);
       await updateDoc(formationRef, {
         name: values.name,
         creator: values.creator || '',
@@ -120,7 +120,7 @@ export function useFormations() {
   const addMatchResult = async (values: AddMatchFormValues) => {
     if(!db) return;
     try {
-      const formationRef = doc(db, 'formations', values.formationId);
+      const formationRef = doc(db, 'eafc_formations', values.formationId);
       const newResult: MatchResult = {
         id: uuidv4(),
         goalsFor: values.goalsFor,
@@ -144,7 +144,7 @@ export function useFormations() {
   const deleteFormation = async (formation: FormationStats) => {
     if(!db) return;
     try {
-      await deleteDoc(doc(db, 'formations', formation.id));
+      await deleteDoc(doc(db, 'eafc_formations', formation.id));
       toast({ title: "Formación Eliminada", description: "La formación y sus estadísticas han sido eliminadas." });
     } catch (error) {
       console.error("Error deleting formation:", error);
@@ -158,7 +158,7 @@ export function useFormations() {
 
   const deleteMatchResult = async (formationId: string, matchId: string) => {
     if (!db) return;
-    const formationRef = doc(db, 'formations', formationId);
+    const formationRef = doc(db, 'eafc_formations', formationId);
     try {
         const formationSnap = await getDoc(formationRef);
         if (formationSnap.exists()) {
@@ -180,7 +180,7 @@ export function useFormations() {
   const downloadBackup = async () => {
     if (!db) return null;
     try {
-      const formationsCollection = collection(db, 'formations');
+      const formationsCollection = collection(db, 'eafc_formations');
       const formationSnapshot = await getDocs(formationsCollection);
       return formationSnapshot.docs.map(doc => ({
         id: doc.id,

@@ -53,17 +53,17 @@ type AddFormationDialogProps = {
   onAddFormation: (values: AddFormationFormValues) => void;
 };
 
-const defaultSlots = formationPresets.find(p => p.name === '4-3-3')?.slots || Array(11).fill({ position: 'DC', styles: [] });
+const defaultSlots = formationPresets.find(p => p.name === '4-3-3 (Holding)')?.slots || Array(11).fill({ position: 'ST', styles: [] });
 
 export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFormationDialogProps) {
-  const [preset, setPreset] = useState('4-3-3');
+  const [preset, setPreset] = useState('4-3-3 (Holding)');
   
   const form = useForm<AddFormationFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       creator: "",
-      playStyle: "Contraataque rápido",
+      playStyle: "Equilibrado",
       slots: defaultSlots,
       imageUrl: "",
       secondaryImageUrl: "",
@@ -88,13 +88,13 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
       reset({
         name: "",
         creator: "",
-        playStyle: "Contraataque rápido",
+        playStyle: "Equilibrado",
         slots: defaultSlots,
         imageUrl: "",
         secondaryImageUrl: "",
         sourceUrl: "",
       });
-      setPreset('4-3-3');
+      setPreset('4-3-3 (Holding)');
     }
   }, [open, reset]);
 
@@ -107,9 +107,9 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle>Añadir Nueva Formación Táctica</DialogTitle>
+          <DialogTitle>Añadir Nueva Táctica Personalizada</DialogTitle>
           <DialogDescription>
-            Elige una plantilla, ajusta las posiciones y estilos de juego en el campo visual.
+            Elige una plantilla, ajusta las posiciones y PlayStyles en el campo visual.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -122,9 +122,9 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                         name="name"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nombre de la Formación</FormLabel>
+                            <FormLabel>Nombre de la Táctica</FormLabel>
                             <FormControl>
-                            <Input placeholder="Ej: 4-3-3 de Klopp" {...field} />
+                            <Input placeholder="Ej: 4-3-3 de Creador" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -137,7 +137,7 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                         <FormItem>
                             <FormLabel>Nombre del Creador (Opcional)</FormLabel>
                             <FormControl>
-                            <Input placeholder="Ej: Zeitzler" {...field} />
+                            <Input placeholder="Ej: TuNombre" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -148,11 +148,11 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                         name="playStyle"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Estilo de Juego Global</FormLabel>
+                            <FormLabel>Estilo Táctico</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                                 <SelectTrigger>
-                                <SelectValue placeholder="Selecciona un estilo de juego" />
+                                <SelectValue placeholder="Selecciona un estilo táctico" />
                                 </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -244,7 +244,7 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                 </div>
             </ScrollArea>
             <DialogFooter className="flex-shrink-0 bg-background/95 py-4 border-t -mx-6 px-6">
-                <Button type="submit">Guardar Formación</Button>
+                <Button type="submit">Guardar Táctica</Button>
             </DialogFooter>
           </form>
         </Form>

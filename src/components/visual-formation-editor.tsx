@@ -93,7 +93,7 @@ const PlayerToken = ({
                     </Select>
                   </div>
                   <div>
-                      <label className="text-sm font-medium mb-2 block">Estilos de Juego (Opcional)</label>
+                      <label className="text-sm font-medium mb-2 block">PlayStyles (Opcional)</label>
                       <Popover>
                           <PopoverTrigger asChild>
                               <Button
@@ -117,9 +117,9 @@ const PlayerToken = ({
                           </PopoverTrigger>
                           <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                               <Command>
-                                  <CommandInput placeholder="Buscar estilo..." />
+                                  <CommandInput placeholder="Buscar PlayStyle..." />
                                   <CommandList>
-                                      <CommandEmpty>No se encontró el estilo.</CommandEmpty>
+                                      <CommandEmpty>No se encontró el PlayStyle.</CommandEmpty>
                                       {playerStyles.map((style) => (
                                           <CommandItem
                                               key={style}

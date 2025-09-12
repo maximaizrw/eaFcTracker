@@ -77,7 +77,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
         <DialogHeader>
           <DialogTitle>Editar Carta</DialogTitle>
           <DialogDescription>
-            Modifica los detalles de la carta, incluyendo su nombre, estilo e imagen.
+            Modifica los detalles de la carta, incluyendo su nombre, PlayStyle e imagen.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -89,7 +89,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
                 <FormItem>
                   <FormLabel>Nombre de la Carta</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: POTW, Highlight..." {...field} />
+                    <Input placeholder="Ej: TOTY, Future Stars..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,11 +100,11 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
               name="currentStyle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Estilo de Juego</FormLabel>
+                  <FormLabel>PlayStyle</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un estilo" />
+                        <SelectValue placeholder="Selecciona un PlayStyle" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

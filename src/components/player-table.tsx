@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Trash2, X, Wrench, Pencil, NotebookPen, Search } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
 import type { Player, PlayerCard, Position, FlatPlayer } from '@/lib/types';
@@ -61,11 +61,11 @@ const Filters = ({
     </div>
     <Select value={styleFilter} onValueChange={onStyleFilterChange}>
       <SelectTrigger className="w-full md:w-[180px]">
-        <SelectValue placeholder="Filtrar por estilo" />
+        <SelectValue placeholder="Filtrar por PlayStyle" />
       </SelectTrigger>
       <SelectContent>
         {uniqueStyles.map(style => (
-          <SelectItem key={style} value={style}>{style === 'all' ? 'Todos los Estilos' : style}</SelectItem>
+          <SelectItem key={style} value={style}>{style === 'all' ? 'Todos los PlayStyles' : style}</SelectItem>
         ))}
       </SelectContent>
     </Select>
@@ -147,7 +147,7 @@ export function PlayerTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[40%] min-w-[150px]">Jugador</TableHead>
-            <TableHead className="hidden md:table-cell">Estilo</TableHead>
+            <TableHead className="hidden md:table-cell">PlayStyle</TableHead>
             <TableHead>Prom.</TableHead>
             <TableHead>Partidos</TableHead>
             <TableHead className="w-[35%] min-w-[200px] hidden md:table-cell">Valoraciones</TableHead>
@@ -204,7 +204,7 @@ export function PlayerTable({
                   </div>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {card.style && card.style !== "Ninguno" ? (
+                  {card.style && card.style !== "Básico" ? (
                     <Badge variant="secondary">{card.style}</Badge>
                   ) : <span className="text-muted-foreground">-</span>}
                 </TableCell>
@@ -284,7 +284,7 @@ export function PlayerTable({
                                 <Wrench className="h-4 w-4 text-muted-foreground/80 hover:text-muted-foreground" />
                             </Button>
                             </TooltipTrigger>
-                            <TooltipContent><p>Editar carta (nombre, estilo e imagen)</p></TooltipContent>
+                            <TooltipContent><p>Editar carta (nombre, PlayStyle e imagen)</p></TooltipContent>
                         </Tooltip>
                         <Tooltip>
                             <TooltipTrigger asChild>

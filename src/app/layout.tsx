@@ -3,8 +3,8 @@ import { Toaster } from "@/components/ui/toaster"
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'eFootTracker',
-  description: 'Sigue las valoraciones de tus jugadores de eFootball',
+  title: 'EAFCTracker',
+  description: 'Sigue las valoraciones de tus jugadores de EAFC',
 };
 
 export default function RootLayout({

@@ -49,7 +49,7 @@ const formSchema = z.object({
   sourceUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
 });
 
-const defaultSlots = formationPresets.find(p => p.name === '4-3-3')?.slots || Array(11).fill({ position: 'DC', styles: [] });
+const defaultSlots = formationPresets.find(p => p.name === '4-3-3 (Holding)')?.slots || Array(11).fill({ position: 'ST', styles: [] });
 
 
 type EditFormationDialogProps = {
@@ -66,7 +66,7 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
       id: "",
       name: "",
       creator: "",
-      playStyle: "Contraataque rápido",
+      playStyle: "Equilibrado",
       slots: defaultSlots,
       imageUrl: "",
       secondaryImageUrl: "",
@@ -103,9 +103,9 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle>Editar Formación Táctica</DialogTitle>
+          <DialogTitle>Editar Táctica Personalizada</DialogTitle>
           <DialogDescription>
-            Modifica la plantilla, especificando posición y estilo de juego para cada puesto.
+            Modifica la plantilla, especificando posición y PlayStyle para cada puesto.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -118,9 +118,9 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                             name="name"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Nombre de la Formación</FormLabel>
+                                <FormLabel>Nombre de la Táctica</FormLabel>
                                 <FormControl>
-                                <Input placeholder="Ej: 4-3-3 de Klopp" {...field} />
+                                <Input placeholder="Ej: 4-3-3 de Creador" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -133,7 +133,7 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                             <FormItem>
                                 <FormLabel>Nombre del Creador (Opcional)</FormLabel>
                                 <FormControl>
-                                <Input placeholder="Ej: Zeitzler" {...field} />
+                                <Input placeholder="Ej: TuNombre" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -145,11 +145,11 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                             name="playStyle"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Estilo de Juego Global</FormLabel>
+                                <FormLabel>Estilo Táctico</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
-                                    <SelectValue placeholder="Selecciona un estilo de juego" />
+                                    <SelectValue placeholder="Selecciona un estilo táctico" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>

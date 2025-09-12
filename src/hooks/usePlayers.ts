@@ -24,7 +24,7 @@ export function usePlayers() {
       return;
     }
 
-    const unsub = onSnapshot(collection(db, "players"), (snapshot) => {
+    const unsub = onSnapshot(collection(db, "eafc_players"), (snapshot) => {
       try {
         const playersData = snapshot.docs.map(doc => {
             const data = doc.data();
@@ -34,7 +34,7 @@ export function usePlayers() {
                 cards: (data.cards || []).map((card: any) => ({
                     ...card,
                     id: card.id || uuidv4(), // Ensure card has an ID
-                    style: card.style || 'Ninguno',
+                    style: card.style || 'Básico',
                     league: card.league || 'Sin Liga',
                     imageUrl: card.imageUrl || '',
                     ratingsByPosition: card.ratingsByPosition || {},
@@ -90,7 +90,7 @@ export function usePlayers() {
       }
 
       if (playerId) {
-        const playerRef = doc(db, 'players', playerId);
+        const playerRef = doc(db, 'eafc_players', playerId);
         const playerDoc = await getDoc(playerRef);
         if (!playerDoc.exists()) throw new Error("Player not found");
         
@@ -129,7 +129,7 @@ export function usePlayers() {
               trainingBuilds: {}
           }],
         };
-        await addDoc(collection(db, 'players'), newPlayer);
+        await addDoc(collection(db, 'eafc_players'), newPlayer);
       }
       toast({ title: "Éxito", description: `La valoración para ${playerName} ha sido guardada.` });
     } catch (error) {
@@ -140,7 +140,7 @@ export function usePlayers() {
 
   const editCard = async (values: EditCardFormValues) => {
     if (!db) return;
-    const playerRef = doc(db, 'players', values.playerId);
+    const playerRef = doc(db, 'eafc_players', values.playerId);
     try {
       const playerDoc = await getDoc(playerRef);
       if (!playerDoc.exists()) throw new Error("Player not found");
@@ -167,7 +167,7 @@ export function usePlayers() {
   const editPlayer = async (values: EditPlayerFormValues) => {
     if (!db) return;
     try {
-      await updateDoc(doc(db, 'players', values.playerId), { name: values.currentPlayerName });
+      await updateDoc(doc(db, 'eafc_players', values.playerId), { name: values.currentPlayerName });
       toast({ title: "Jugador Actualizado", description: "El nombre del jugador se ha actualizado." });
     } catch (error) {
       console.error("Error updating player: ", error);
@@ -177,7 +177,7 @@ export function usePlayers() {
 
   const deleteCard = async (playerId: string, cardId: string, position: Position) => {
     if (!db) return;
-    const playerRef = doc(db, 'players', playerId);
+    const playerRef = doc(db, 'eafc_players', playerId);
     try {
       const playerDoc = await getDoc(playerRef);
       if (!playerDoc.exists()) throw new Error("Player not found");
@@ -212,7 +212,7 @@ export function usePlayers() {
 
   const deleteRating = async (playerId: string, cardId: string, position: Position, ratingIndex: number) => {
     if (!db) return;
-    const playerRef = doc(db, 'players', playerId);
+    const playerRef = doc(db, 'eafc_players', playerId);
     try {
       const playerDoc = await getDoc(playerRef);
       if (!playerDoc.exists()) throw new Error("Player not found");
@@ -237,7 +237,7 @@ export function usePlayers() {
   
   const saveTrainingBuild = async (playerId: string, cardId: string, position: Position, build: TrainingBuild) => {
     if (!db) return;
-    const playerRef = doc(db, 'players', playerId);
+    const playerRef = doc(db, 'eafc_players', playerId);
     try {
         const playerDoc = await getDoc(playerRef);
         if (!playerDoc.exists()) {
@@ -268,7 +268,7 @@ export function usePlayers() {
   const downloadBackup = async () => {
     if (!db) return null;
     try {
-      const playersCollection = collection(db, 'players');
+      const playersCollection = collection(db, 'eafc_players');
       const playerSnapshot = await getDocs(playersCollection);
       return playerSnapshot.docs.map(doc => ({
         id: doc.id,

@@ -71,7 +71,7 @@ export default function Home() {
   
   const allPlayers = players || [];
 
-  const [activeTab, setActiveTab] = useState<string>('DC');
+  const [activeTab, setActiveTab] = useState<string>('ST');
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddRatingDialogOpen, setAddRatingDialogOpen] = useState(false);
   const [isAddFormationDialogOpen, setAddFormationDialogOpen] = useState(false);
@@ -248,7 +248,7 @@ export default function Home() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'eFootTracker_backup.json';
+    link.download = 'EAFCTracker_backup.json';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -389,7 +389,7 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-background/70 backdrop-blur-md border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-xl sm:text-3xl font-bold font-headline text-primary">
-            eFootTracker
+            EAFCTracker
           </h1>
           <div className="flex items-center gap-2">
             <Button onClick={handleDownloadBackup} variant="outline" size="sm">
@@ -402,7 +402,7 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto p-4 md:p-8">
-        <Tabs defaultValue="DC" className="w-full" onValueChange={handleTabChange} value={activeTab}>
+        <Tabs defaultValue="ST" className="w-full" onValueChange={handleTabChange} value={activeTab}>
            <ScrollArea className="w-full whitespace-nowrap rounded-md border">
             <TabsList className="inline-flex w-max">
               {positions.map((pos) => (
@@ -565,7 +565,7 @@ export default function Home() {
                    Generador de 11 Ideal
                  </CardTitle>
                  <CardDescription>
-                   Selecciona una de tus formaciones tácticas y generaremos el mejor equipo posible (titulares y suplentes) basado en el promedio y estilo de tus jugadores.
+                   Selecciona una de tus formaciones tácticas y generaremos el mejor equipo posible (titulares y suplentes) basado en el promedio y PlayStyle de tus jugadores.
                  </CardDescription>
                </CardHeader>
                <CardContent>
