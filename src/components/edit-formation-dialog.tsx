@@ -31,46 +31,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import type { EditFormationFormValues, FormationStats } from "@/lib/types";
-import { formationPlayStyles, FormationSlotSchema } from "@/lib/types";
-import { formationPresets } from "@/lib/formation-presets";
+import { Textarea } from "@/components/ui/textarea";
+import type { EditTacticFormValues, Tactic } from "@/lib/types";
+import { tacticStyles, defenseStyles } from "@/lib/types";
 import { ScrollArea } from "./ui/scroll-area";
 
 
 const formSchema = z.object({
   id: z.string(),
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
-  creator: z.string().optional(),
-  playStyle: z.enum(formationPlayStyles),
-  slots: z.array(FormationSlotSchema).length(11, "Debe definir exactamente 11 posiciones."),
-  imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
-  secondaryImageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
-  sourceUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
+  detail: z.string().optional(),
+  formation: z.string().min(3, "La formación debe tener al menos 3 caracteres."),
+  style: z.enum(tacticStyles),
+  defense: z.enum(defenseStyles),
+  code: z.string().optional(),
 });
-
-const defaultSlots = formationPresets.find(p => p.name === '4-4-2')?.slots || Array(11).fill({ position: 'ST', styles: [] });
 
 
 type EditFormationDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onEditFormation: (values: EditFormationFormValues) => void;
-  initialData?: FormationStats;
+  onEditFormation: (values: EditTacticFormValues) => void;
+  initialData?: Tactic;
 };
 
 export function EditFormationDialog({ open, onOpenChange, onEditFormation, initialData }: EditFormationDialogProps) {
-  const form = useForm<EditFormationFormValues>({
+  const form = useForm<EditTacticFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      id: "",
-      name: "",
-      creator: "",
-      playStyle: "Equilibrado",
-      slots: defaultSlots,
-      imageUrl: "",
-      secondaryImageUrl: "",
-      sourceUrl: "",
-    },
   });
 
   useEffect(() => {
@@ -78,20 +65,16 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
       form.reset({
         id: initialData.id,
         name: initialData.name,
-        creator: initialData.creator || "",
-        playStyle: initialData.playStyle,
-        slots: (initialData.slots && initialData.slots.length === 11 ? initialData.slots : defaultSlots).map(s => ({
-          ...s,
-          styles: s.styles || [],
-        })),
-        imageUrl: initialData.imageUrl || "",
-        secondaryImageUrl: initialData.secondaryImageUrl || "",
-        sourceUrl: initialData.sourceUrl || "",
+        detail: initialData.detail || "",
+        formation: initialData.formation,
+        style: initialData.style,
+        defense: initialData.defense,
+        code: initialData.code || "",
       });
     }
   }, [open, initialData, form]);
   
-  function onSubmit(values: EditFormationFormValues) {
+  function onSubmit(values: EditTacticFormValues) {
     onEditFormation(values);
     onOpenChange(false);
   }
@@ -100,7 +83,7 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl flex flex-col">
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle>Editar Táctica Personalizada</DialogTitle>
+          <DialogTitle>Editar Táctica</DialogTitle>
           <DialogDescription>
             Modifica los detalles de la táctica.
           </DialogDescription>
@@ -116,7 +99,7 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                             <FormItem>
                                 <FormLabel>Nombre de la Táctica</FormLabel>
                                 <FormControl>
-                                <Input placeholder="Ej: 4-3-3 de Creador" {...field} />
+                                <Input placeholder="Ej: 4-3-3" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -124,12 +107,12 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                         />
                         <FormField
                             control={form.control}
-                            name="creator"
+                            name="detail"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Nombre del Creador (Opcional)</FormLabel>
+                                <FormLabel>Detalle (Opcional)</FormLabel>
                                 <FormControl>
-                                <Input placeholder="Ej: TuNombre" {...field} />
+                                <Textarea placeholder="Detalles sobre la táctica, autor, etc." {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -137,19 +120,32 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                         />
                         <FormField
                             control={form.control}
-                            name="playStyle"
+                            name="formation"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Estilo Táctico</FormLabel>
+                                <FormLabel>Formación</FormLabel>
+                                <FormControl>
+                                <Input placeholder="Ej: 4-3-3" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="style"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Estilo de Ataque</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
-                                    <SelectValue placeholder="Selecciona un estilo táctico" />
+                                    <SelectValue placeholder="Selecciona un estilo" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    {formationPlayStyles.map((style) => (
-                                    <SelectItem key={style} value={style}>{style}</SelectItem>
+                                    {tacticStyles.map((style) => (
+                                    <SelectItem key={style} value={style} className="capitalize">{style}</SelectItem>
                                     ))}
                                 </SelectContent>
                                 </Select>
@@ -157,41 +153,36 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                             </FormItem>
                             )}
                         />
-
-                        <FormField
+                         <FormField
                             control={form.control}
-                            name="imageUrl"
+                            name="defense"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>URL Táctica Principal (Opcional)</FormLabel>
+                                <FormLabel>Estilo de Defensa</FormLabel>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                 <FormControl>
-                                <Input placeholder="https://ejemplo.com/tactica.png" {...field} />
+                                    <SelectTrigger>
+                                    <SelectValue placeholder="Selecciona un estilo" />
+                                    </SelectTrigger>
                                 </FormControl>
+                                <SelectContent>
+                                    {defenseStyles.map((style) => (
+                                    <SelectItem key={style} value={style} className="capitalize">{style}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                             )}
                         />
                         <FormField
                             control={form.control}
-                            name="secondaryImageUrl"
+                            name="code"
                             render={({ field }) => (
                             <FormItem>
-                                <FormLabel>URL Táctica Secundaria (Opcional)</FormLabel>
+                                <FormLabel>Código (Opcional)</FormLabel>
                                 <FormControl>
-                                <Input placeholder="https://ejemplo.com/tactica_sec.png" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="sourceUrl"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>URL Fuente (Opcional)</FormLabel>
-                                <FormControl>
-                                <Input placeholder="https://youtube.com/..." {...field} />
+                                <Input placeholder="Código para compartir" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

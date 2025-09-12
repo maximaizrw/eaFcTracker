@@ -1,4 +1,3 @@
-
 import type { Player as PlayerType, PlayerCard as PlayerCardType, Position as PositionType } from './types';
 import * as z from "zod";
 
@@ -105,15 +104,12 @@ export type IdealTeamSlot = {
 
 // --- Tipos para Formaciones ---
 
-export const formationPlayStyles = [
-  'Equilibrado', 
-  'Rearme Rápido', 
-  'Balones Largos', 
-  'Posesión',
-  'Presión Constante',
-  'Presión Fuerte al Perder Balón'
-] as const;
-export type FormationPlayStyle = typeof formationPlayStyles[number];
+export const tacticStyles = ['balanced', 'counter', 'short passing'] as const;
+export type TacticStyle = typeof tacticStyles[number];
+
+export const defenseStyles = ['balanced', 'deep', 'high', 'aggressive'] as const;
+export type DefenseStyle = typeof defenseStyles[number];
+
 
 export type MatchResult = {
   id: string;
@@ -122,48 +118,29 @@ export type MatchResult = {
   date: string; // ISO 8601 string
 };
 
-export const FormationSlotSchema = z.object({
-  position: z.enum(positions),
-  styles: z.array(z.enum(playerStyles)).optional().default([]),
-  top: z.number().optional(),
-  left: z.number().optional(),
-});
-
-export type FormationSlot = z.infer<typeof FormationSlotSchema>;
-
-export type FormationStats = {
+export type Tactic = {
   id: string;
   name: string;
-  creator?: string;
-  playStyle: FormationPlayStyle;
-  slots: FormationSlot[];
-  imageUrl?: string;
-  secondaryImageUrl?: string;
-  sourceUrl?: string;
+  detail: string;
+  formation: string;
+  style: TacticStyle;
+  defense: DefenseStyle;
+  code: string;
   matches: MatchResult[];
 };
 
-export type AddFormationFormValues = {
+export type AddTacticFormValues = {
   name: string;
-  creator?: string;
-  playStyle: FormationPlayStyle;
-  slots: FormationSlot[];
-  imageUrl?: string;
-  secondaryImageUrl?: string;
-  sourceUrl?: string;
+  detail: string;
+  formation: string;
+  style: TacticStyle;
+  defense: DefenseStyle;
+  code: string;
 };
 
-export type EditFormationFormValues = {
+export type EditTacticFormValues = AddTacticFormValues & {
   id: string;
-  name: string;
-  creator?: string;
-  playStyle: FormationPlayStyle;
-  slots: FormationSlot[];
-  imageUrl?: string;
-  secondaryImageUrl?: string;
-  sourceUrl?: string;
 };
-
 
 export type AddMatchFormValues = {
   formationId: string;

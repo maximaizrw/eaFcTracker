@@ -1,10 +1,10 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -19,8 +19,8 @@ import { Input } from '@/components/ui/input';
 import { AddRatingDialog, type FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
 import { EditCardDialog, type FormValues as EditCardFormValues } from '@/components/edit-card-dialog';
 import { EditPlayerDialog, type FormValues as EditPlayerFormValues } from '@/components/edit-player-dialog';
-import { AddFormationDialog, type AddFormationFormValues } from '@/components/add-formation-dialog';
-import { EditFormationDialog, type EditFormationFormValues } from '@/components/edit-formation-dialog';
+import { AddFormationDialog } from '@/components/add-formation-dialog';
+import { EditFormationDialog } from '@/components/edit-formation-dialog';
 import { AddMatchDialog, type AddMatchFormValues } from '@/components/add-match-dialog';
 import { PlayerDetailDialog } from '@/components/player-detail-dialog';
 
@@ -32,7 +32,7 @@ import { usePlayers } from '@/hooks/usePlayers';
 import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Player, PlayerCard as PlayerCardType, FormationStats, FlatPlayer, Position } from '@/lib/types';
+import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues } from '@/lib/types';
 import { positions } from '@/lib/types';
 import { PlusCircle, Download, Trophy } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
@@ -84,7 +84,7 @@ export default function Home() {
   const [addMatchInitialData, setAddMatchInitialData] = useState<{ formationId: string; formationName: string } | undefined>(undefined);
   const [editCardDialogInitialData, setEditCardDialogInitialData] = useState<EditCardFormValues | undefined>(undefined);
   const [editPlayerDialogInitialData, setEditPlayerDialogInitialData] = useState<EditPlayerFormValues | undefined>(undefined);
-  const [editFormationDialogInitialData, setEditFormationDialogInitialData] = useState<FormationStats | undefined>(undefined);
+  const [editFormationDialogInitialData, setEditFormationDialogInitialData] = useState<Tactic | undefined>(undefined);
   const [selectedFlatPlayer, setSelectedFlatPlayer] = useState<FlatPlayer | null>(null);
 
   // State for filters and pagination
@@ -124,7 +124,7 @@ export default function Home() {
     setPlayerDetailDialogOpen(true);
   };
   
-  const handleOpenEditFormation = (formation: FormationStats) => {
+  const handleOpenEditFormation = (formation: Tactic) => {
     setEditFormationDialogInitialData(formation);
     setEditFormationDialogOpen(true);
   };
@@ -244,12 +244,12 @@ export default function Home() {
       <AddFormationDialog
         open={isAddFormationDialogOpen}
         onOpenChange={setAddFormationDialogOpen}
-        onAddFormation={addFormation}
+        onAddFormation={addFormation as (values: AddTacticFormValues) => void}
       />
       <EditFormationDialog
         open={isEditFormationDialogOpen}
         onOpenChange={setEditFormationDialogOpen}
-        onEditFormation={editFormation}
+        onEditFormation={editFormation as (values: EditTacticFormValues) => void}
         initialData={editFormationDialogInitialData}
       />
       <AddMatchDialog
@@ -469,5 +469,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
