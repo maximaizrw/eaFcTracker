@@ -19,10 +19,10 @@ export type Position = typeof positions[number];
 
 // Position Roles
 export const positionRoles = {
-  GK: ['Goalkeeper', 'Sweeper Keeper'],
-  RB: ['Full-Back', 'Wing-Back', 'Inverted Wing-Back'],
-  LB: ['Full-Back', 'Wing-Back', 'Inverted Wing-Back'],
-  CB: ['Center-Back', 'Stopper', 'Sweeper'],
+  GK: ['Goalkeeper', 'Sweeper Keeper', 'Ball-Playing Keeper'],
+  RB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
+  LB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
+  CB: ['Defender', 'Stopper', 'Ball-Playing Defender', 'Wide Back'],
   CDM: ['Anchor Man', 'Deep-Lying Playmaker', 'Ball-Winning Midfielder'],
   RM: ['Wide Midfielder', 'Winger'],
   LM: ['Wide Midfielder', 'Winger'],
@@ -110,10 +110,6 @@ export type PlayersByPosition = {
   [key in Position]?: number;
 };
 
-export type Formation = {
-  [key in Position]?: number;
-};
-
 // --- Tipos para Formaciones ---
 
 export const tacticStyles = ['balanced', 'counter', 'short passing'] as const;
@@ -184,4 +180,3 @@ export type FlatPlayer = {
   performance: PlayerPerformance;
   hasTrainingBuild: boolean;
 };
-
