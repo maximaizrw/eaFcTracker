@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect } from "react";
@@ -23,10 +24,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { nationalities } from "@/lib/types";
+import type { Nationality } from "@/lib/types";
+
 
 const formSchema = z.object({
   playerId: z.string().min(1, "Se requiere el ID del jugador."),
   currentPlayerName: z.string().min(2, "El nombre del jugador debe tener al menos 2 caracteres."),
+  nationality: z.enum(nationalities),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -44,6 +56,7 @@ export function EditPlayerDialog({ open, onOpenChange, onEditPlayer, initialData
     defaultValues: {
         playerId: '',
         currentPlayerName: '',
+        nationality: 'Sin Nacionalidad',
     }
   });
 
@@ -62,9 +75,9 @@ export function EditPlayerDialog({ open, onOpenChange, onEditPlayer, initialData
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Editar Nombre del Jugador</DialogTitle>
+          <DialogTitle>Editar Jugador</DialogTitle>
           <DialogDescription>
-            Modifica el nombre del jugador. Este nombre se aplicará a todas sus cartas.
+            Modifica los datos del jugador. Esto se aplicará a todas sus cartas.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -78,6 +91,28 @@ export function EditPlayerDialog({ open, onOpenChange, onEditPlayer, initialData
                   <FormControl>
                     <Input placeholder="Ej: L. Messi" {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nationality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nacionalidad</FormLabel>
+                   <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Selecciona una nacionalidad" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {nationalities.map((nationality) => (
+                        <SelectItem key={nationality} value={nationality}>{nationality}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

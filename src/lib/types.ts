@@ -1,36 +1,24 @@
-
 import type { Player as PlayerType, PlayerCard as PlayerCardType, Position as PositionType } from './types';
 import * as z from "zod";
 
-// EAFC PlayStyles
-export const playerStyles = [
-    'Básico', 'Rematador', 'Tirador Preciso', 'Cabeza Potente', 'Tiro Potente', 'Tiro de Calidad',
-    'Pase Preciso', 'Pase con Efecto', 'Pase Balístico', 'Tiki Taka', 'Pase Largo', 'Bloqueo',
-    'Intercepción', 'Implacable', 'Zapador', 'Primer Toque', 'Regate Veloz', 'Regate Hábil',
-    'Vaselina', 'Trilero', 'Paso Rápido', 'Acrobático', 'Juego Aéreo', 'Trivela',
-    'Barridas', 'Anticipación', 'Leñero', 'Infranqueable', 'Saque Largo', 'Parada Rápida', 'Salida Rápida'
-] as const;
-
-export type PlayerStyle = typeof playerStyles[number];
-
 // EAFC Positions
-export const positions = ['GK', 'RB', 'LB', 'CB', 'CDM', 'RM', 'LM', 'CM', 'CAM', 'RW', 'LW', 'ST'] as const;
+export const positions = ["GK", "LB", "CB", "RB", "CAM", "CM", "CDM", "RM", "LM", "ST", "RW", "LW"] as const;
 export type Position = typeof positions[number];
 
 // Position Roles
 export const positionRoles = {
-  GK: ['Goalkeeper', 'Sweeper Keeper', 'Ball-Playing Keeper'],
-  RB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
-  LB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
-  CB: ['Defender', 'Stopper', 'Ball-Playing Defender', 'Wide Back'],
-  CDM: ['Anchor Man', 'Deep-Lying Playmaker', 'Ball-Winning Midfielder'],
-  RM: ['Wide Midfielder', 'Winger'],
-  LM: ['Wide Midfielder', 'Winger'],
-  CM: ['Box-to-Box', 'Central Midfielder', 'Roaming Playmaker'],
-  CAM: ['Attacking Midfielder', 'Advanced Playmaker', 'Trequartista'],
-  RW: ['Winger', 'Inside Forward', 'Raumdeuter'],
-  LW: ['Winger', 'Inside Forward', 'Raumdeuter'],
-  ST: ['Poacher', 'Target Man', 'Complete Forward', 'Pressing Forward', 'False 9'],
+  GK: ["Goalkeeper", "Sweeper Keeper", "Ball-Playing Keeper"],
+  RB: ["Fullback", "Wingback", "Falseback", "Attacking Wingback", "Inverted Wingback"],
+  LB: ["Fullback", "Wingback", "Falseback", "Attacking Wingback", "Inverted Wingback"],
+  CB: ["Defender", "Stopper", "Ball-Playing Defender", "Wide Back"],
+  CDM: ["Anchor Man", "Deep-Lying Playmaker", "Ball-Winning Midfielder"],
+  RM: ["Wide Midfielder", "Winger"],
+  LM: ["Wide Midfielder", "Winger"],
+  CM: ["Box-to-Box", "Central Midfielder", "Roaming Playmaker"],
+  CAM: ["Attacking Midfielder", "Advanced Playmaker", "Trequartista"],
+  RW: ["Winger", "Inside Forward", "Raumdeuter"],
+  LW: ["Winger", "Inside Forward", "Raumdeuter"],
+  ST: ["Poacher", "Target Man", "Complete Forward", "Pressing Forward", "False 9"],
 } as const;
 
 export type Role = typeof positionRoles[keyof typeof positionRoles][number];
@@ -46,6 +34,16 @@ export const leagues = [
 ] as const;
 
 export type League = typeof leagues[number];
+
+// Nationalities
+export const nationalities = [
+  'Sin Nacionalidad', 'Argentina', 'Brasil', 'Francia', 'Alemania', 'España', 'Inglaterra', 'Portugal', 'Bélgica', 
+  'Países Bajos', 'Italia', 'Croacia', 'Uruguay', 'Colombia', 'México', 'Estados Unidos', 'Japón', 'Corea del Sur',
+  'Senegal', 'Nigeria', 'Marruecos', 'Polonia', 'Serbia', 'Suiza', 'Dinamarca', 'Suecia', 'Noruega', 'Austria',
+  'Turquía', 'Escocia', 'Gales', 'Irlanda'
+] as const;
+export type Nationality = typeof nationalities[number];
+
 
 export const trainingAttributes = [
     'shooting', 'passing', 'dribbling', 'dexterity', 
@@ -68,7 +66,6 @@ export type Rating = {
 export type PlayerCard = {
   id: string;
   name: string; // e.g., "TOTY", "Future Stars"
-  style: PlayerStyle;
   league?: League;
   imageUrl?: string;
   ratingsByPosition: { [key in Position]?: Rating[] };
@@ -78,15 +75,16 @@ export type PlayerCard = {
 export type Player = {
   id: string;
   name: string;
+  nationality: Nationality;
   cards: PlayerCard[];
 };
 
 export type AddRatingFormValues = {
     playerId?: string;
     playerName: string;
+    nationality: Nationality;
     cardName: string;
     position: Position;
-    style: PlayerStyle;
     league?: League;
     rating: number;
     role?: Role;
@@ -96,7 +94,6 @@ export type EditCardFormValues = {
     playerId: string;
     cardId: string;
     currentCardName: string;
-    currentStyle: PlayerStyle;
     league?: League;
     imageUrl?: string;
 };
@@ -104,6 +101,7 @@ export type EditCardFormValues = {
 export type EditPlayerFormValues = {
     playerId: string;
     currentPlayerName: string;
+    nationality: Nationality;
 };
 
 export type PlayersByPosition = {

@@ -32,7 +32,7 @@ import { usePlayers } from '@/hooks/usePlayers';
 import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role } from '@/lib/types';
+import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role, Nationality, League } from '@/lib/types';
 import { positions } from '@/lib/types';
 import { PlusCircle, Download, Trophy } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
@@ -88,7 +88,6 @@ export default function Home() {
   const [selectedFlatPlayer, setSelectedFlatPlayer] = useState<FlatPlayer | null>(null);
 
   // State for filters and pagination
-  const [styleFilter, setStyleFilter] = useState<string>('all');
   const [cardFilter, setCardFilter] = useState<string>('all');
   const [roleFilter, setRoleFilter] = useState<string>('all');
   const [pagination, setPagination] = useState<Record<string, number>>({});
@@ -105,7 +104,6 @@ export default function Home() {
         playerId: player.id,
         cardId: card.id,
         currentCardName: card.name,
-        currentStyle: card.style,
         league: card.league || 'Sin Liga',
         imageUrl: card.imageUrl || '',
     });
@@ -116,6 +114,7 @@ export default function Home() {
     setEditPlayerDialogInitialData({
       playerId: player.id,
       currentPlayerName: player.name,
+      nationality: player.nationality,
     });
     setEditPlayerDialogOpen(true);
   };
@@ -179,7 +178,6 @@ export default function Home() {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     setSearchTerm('');
-    setStyleFilter('all');
     setCardFilter('all');
     setRoleFilter('all');
   };
@@ -397,10 +395,9 @@ export default function Home() {
 
             }).filter(({ player, card, ratingsForPos }) => {
                 const searchMatch = normalizeText(player.name).includes(normalizeText(searchTerm));
-                const styleMatch = styleFilter === 'all' || card.style === styleFilter;
                 const cardMatch = cardFilter === 'all' || card.name === cardFilter;
                 const roleMatch = roleFilter === 'all' || ratingsForPos.some(r => r.role === roleFilter);
-                return searchMatch && styleMatch && cardMatch && roleMatch;
+                return searchMatch && cardMatch && roleMatch;
             
             }).sort((a, b) => {
               // 3. Sort the list
@@ -427,14 +424,6 @@ export default function Home() {
             );
             const totalPages = Math.ceil(filteredPlayerList.length / ITEMS_PER_PAGE);
             
-            const allPositionalStyles = new Set<string>();
-            flatPlayerList.forEach(p => {
-              if (p.ratingsForPos.length > 0 && p.card.style) {
-                allPositionalStyles.add(p.card.style)
-              }
-            });
-            const uniqueStyles = Array.from(allPositionalStyles);
-            
             const allPositionalCards = new Set<string>();
             flatPlayerList.forEach(p => {
               if (p.ratingsForPos.length > 0) {
@@ -450,13 +439,10 @@ export default function Home() {
                        <PlayerTable.Filters
                           searchTerm={searchTerm}
                           onSearchTermChange={setSearchTerm}
-                          styleFilter={styleFilter}
-                          onStyleFilterChange={setStyleFilter}
                           cardFilter={cardFilter}
                           onCardFilterChange={setCardFilter}
                           roleFilter={roleFilter}
                           onRoleFilterChange={setRoleFilter}
-                          uniqueStyles={uniqueStyles}
                           uniqueCardNames={uniqueCardNames}
                           position={pos}
                         />

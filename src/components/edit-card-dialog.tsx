@@ -31,14 +31,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { PlayerStyle, League } from "@/lib/types";
-import { playerStyles, leagues } from "@/lib/types";
+import type { League } from "@/lib/types";
+import { leagues } from "@/lib/types";
 
 const formSchema = z.object({
   playerId: z.string(),
   cardId: z.string(),
   currentCardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
-  currentStyle: z.enum(playerStyles),
   league: z.enum(leagues).optional(),
   imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
 });
@@ -77,7 +76,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
         <DialogHeader>
           <DialogTitle>Editar Carta</DialogTitle>
           <DialogDescription>
-            Modifica los detalles de la carta, incluyendo su nombre, PlayStyle e imagen.
+            Modifica los detalles de la carta, incluyendo su nombre, liga e imagen.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -91,28 +90,6 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
                   <FormControl>
                     <Input placeholder="Ej: TOTY, Future Stars..." {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="currentStyle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>PlayStyle</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecciona un PlayStyle" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {playerStyles.map((style) => (
-                        <SelectItem key={style} value={style}>{style}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

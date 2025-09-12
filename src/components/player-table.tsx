@@ -30,13 +30,10 @@ type PlayerTableProps = {
 type FilterProps = {
   searchTerm: string;
   onSearchTermChange: (value: string) => void;
-  styleFilter: string;
-  onStyleFilterChange: (value: string) => void;
   cardFilter: string;
   onCardFilterChange: (value: string) => void;
   roleFilter: string;
   onRoleFilterChange: (value: string) => void;
-  uniqueStyles: string[];
   uniqueCardNames: string[];
   position: Position;
 };
@@ -44,20 +41,17 @@ type FilterProps = {
 const Filters = ({
   searchTerm,
   onSearchTermChange,
-  styleFilter,
-  onStyleFilterChange,
   cardFilter,
   onCardFilterChange,
   roleFilter,
   onRoleFilterChange,
-  uniqueStyles,
   uniqueCardNames,
   position
 }: FilterProps) => {
     const availableRoles = positionRoles[position] || [];
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-            <div className="relative col-span-1 lg:col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <div className="relative col-span-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                     placeholder={`Buscar en ${position}...`}
@@ -66,17 +60,6 @@ const Filters = ({
                     className="pl-10 w-full"
                 />
             </div>
-            <Select value={styleFilter} onValueChange={onStyleFilterChange}>
-                <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Filtrar por PlayStyle" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los PlayStyles</SelectItem>
-                    {uniqueStyles.map(style => (
-                    <SelectItem key={style} value={style}>{style}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
             <Select value={cardFilter} onValueChange={onCardFilterChange}>
                 <SelectTrigger className="w-full">
                     <SelectValue placeholder="Filtrar por carta" />
@@ -168,7 +151,7 @@ export function PlayerTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[40%] min-w-[150px]">Jugador</TableHead>
-            <TableHead className="hidden md:table-cell">PlayStyle / Rol</TableHead>
+            <TableHead className="hidden md:table-cell">Rol</TableHead>
             <TableHead>Prom.</TableHead>
             <TableHead>Partidos</TableHead>
             <TableHead className="w-[35%] min-w-[200px] hidden md:table-cell">Valoraciones</TableHead>
@@ -225,11 +208,6 @@ export function PlayerTable({
                   </div>
                 </TableCell>
                 <TableCell className="hidden md:table-cell space-y-1">
-                  <div>
-                    {card.style && card.style !== "Básico" ? (
-                      <Badge variant="secondary">{card.style}</Badge>
-                    ) : <span className="text-muted-foreground">-</span>}
-                  </div>
                    <div>
                     {performance.mostCommonRole ? (
                         <Badge variant="outline">{performance.mostCommonRole}</Badge>
@@ -277,9 +255,9 @@ export function PlayerTable({
                               onClick={() => onOpenAddRating({
                                   playerId: player.id,
                                   playerName: player.name,
+                                  nationality: player.nationality,
                                   cardName: card.name,
                                   position: position,
-                                  style: card.style
                               })}
                           >
                               <PlusCircle className="h-5 w-5 md:h-4 md:w-4 text-primary/80 hover:text-primary" />
@@ -300,7 +278,7 @@ export function PlayerTable({
                                 <Pencil className="h-4 w-4 text-muted-foreground/60 hover:text-muted-foreground" />
                             </Button>
                             </TooltipTrigger>
-                            <TooltipContent><p>Editar nombre del jugador</p></TooltipContent>
+                            <TooltipContent><p>Editar datos del jugador</p></TooltipContent>
                         </Tooltip>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -312,7 +290,7 @@ export function PlayerTable({
                                 <Wrench className="h-4 w-4 text-muted-foreground/80 hover:text-muted-foreground" />
                             </Button>
                             </TooltipTrigger>
-                            <TooltipContent><p>Editar carta (nombre, PlayStyle e imagen)</p></TooltipContent>
+                            <TooltipContent><p>Editar carta (nombre, liga e imagen)</p></TooltipContent>
                         </Tooltip>
                         <Tooltip>
                             <TooltipTrigger asChild>

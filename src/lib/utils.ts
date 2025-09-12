@@ -1,8 +1,7 @@
 
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { Position, PositionGroup, PlayerStyle, Rating } from "./types";
-import { playerStyles } from "./types";
+import type { Position, PositionGroup, Rating } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -84,12 +83,6 @@ export function getAverageColorClass(average: number): string {
   if (average >= 6.0) return 'text-yellow-400';
   return 'text-orange-400';
 }
-
-export function getAvailableStylesForPosition(position: Position, includeNinguno = false): PlayerStyle[] {
-    const baseStyles: PlayerStyle[] = includeNinguno ? ['Básico'] : [];
-    return [...baseStyles, ...playerStyles.filter(s => s !== 'Básico')];
-}
-
 
 export function normalizeText(text: string): string {
   if (!text) return '';

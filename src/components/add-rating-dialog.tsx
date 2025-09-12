@@ -45,16 +45,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider";
-import { cn, getAvailableStylesForPosition } from "@/lib/utils";
-import type { Player, Position, PlayerStyle, League, Role } from "@/lib/types";
-import { positions, playerStyles, leagues, positionRoles } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import type { Player, Position, League, Role, Nationality } from "@/lib/types";
+import { positions, leagues, positionRoles, nationalities } from "@/lib/types";
 
 const formSchema = z.object({
   playerId: z.string().optional(),
   playerName: z.string().min(2, "El nombre del jugador debe tener al menos 2 caracteres."),
+  nationality: z.enum(nationalities),
   cardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
   position: z.enum(positions),
-  style: z.enum(playerStyles),
   league: z.enum(leagues).optional(),
   rating: z.number().min(1).max(10),
   role: z.string().optional(),
@@ -74,17 +74,15 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
   const [playerPopoverOpen, setPlayerPopoverOpen] = useState(false);
   const [cardPopoverOpen, setCardPopoverOpen] = useState(false);
   const [cardNames, setCardNames] = useState<string[]>([]);
-  const [isStyleDisabled, setIsStyleDisabled] = useState(false);
-
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       playerId: undefined,
       playerName: "",
+      nationality: "Sin Nacionalidad",
       cardName: "Carta Base",
       position: "ST",
-      style: "Básico",
       league: "Sin Liga",
       rating: 5,
       role: undefined,
@@ -100,12 +98,12 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
 
   useEffect(() => {
     if (open) {
-      const defaultValues = {
+      const defaultValues: Partial<FormValues> = {
         playerId: undefined,
         playerName: '',
+        nationality: 'Sin Nacionalidad',
         cardName: 'Carta Base',
         position: 'ST' as Position,
-        style: 'Básico' as PlayerStyle,
         league: 'Sin Liga' as League,
         rating: 5,
         role: undefined,
@@ -126,34 +124,17 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
        if (form.getValues('playerId') !== selectedPlayer.id) {
         form.setValue('playerId', selectedPlayer.id);
       }
+      form.setValue('nationality', selectedPlayer.nationality);
       setCardNames(selectedPlayer.cards.map(c => c.name));
     } else {
       setCardNames([]);
     }
 
     const card = selectedPlayer?.cards.find(c => c.name.toLowerCase() === cardNameValue?.toLowerCase());
-    const availableStyles = getAvailableStylesForPosition(positionValue, true);
 
     if (card) {
-      const isStyleValidForPosition = availableStyles.includes(card.style);
-      
-      if (isStyleValidForPosition) {
-        form.setValue('style', card.style, { shouldValidate: true });
-        setIsStyleDisabled(true);
-      } else {
-        // The card's style is invalid for the new position, so we reset it.
-        form.setValue('style', 'Básico', { shouldValidate: true });
-        setIsStyleDisabled(false);
-      }
       if (card.league) {
         form.setValue('league', card.league);
-      }
-    } else {
-      // It's a new card, so style is editable.
-      setIsStyleDisabled(false);
-      const currentStyle = form.getValues('style');
-      if (!availableStyles.includes(currentStyle)) {
-        form.setValue('style', 'Básico');
       }
     }
      // Reset role if position changes and current role is not valid for the new position
@@ -162,12 +143,6 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         form.setValue('role', undefined);
     }
   }, [playerIdValue, playerNameValue, cardNameValue, positionValue, players, form, availableRoles]);
-
-
-  const availableStyles = useMemo(() => {
-    return getAvailableStylesForPosition(positionValue, true);
-  }, [positionValue]);
-
 
   function onSubmit(values: FormValues) {
     onAddRating({
@@ -178,6 +153,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
   }
   
   const isQuickAdd = !!initialData?.playerId;
+  const isPlayerSelected = !!playerIdValue;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -253,6 +229,28 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                       </Command>
                     </PopoverContent>
                   </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nationality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nacionalidad</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={isQuickAdd || isPlayerSelected}>
+                    <FormControl>
+                    <SelectTrigger className={cn((isQuickAdd || isPlayerSelected) && "text-muted-foreground")}>
+                        <SelectValue placeholder="Selecciona una nacionalidad" />
+                    </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {nationalities.map((nationality) => (
+                        <SelectItem key={nationality} value={nationality}>{nationality}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -386,28 +384,6 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="style"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>PlayStyle</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value} disabled={isQuickAdd || isStyleDisabled}>
-                    <FormControl>
-                    <SelectTrigger className={cn((isQuickAdd || isStyleDisabled) && "text-muted-foreground")}>
-                        <SelectValue placeholder="Selecciona un PlayStyle" />
-                    </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {availableStyles.map((style) => (
-                        <SelectItem key={style} value={style}>{style}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
              <FormField
               control={form.control}
               name="rating"

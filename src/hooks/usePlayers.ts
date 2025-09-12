@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase-config';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
-import type { Player, PlayerCard, Position, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild, League, Rating } from '@/lib/types';
+import type { Player, PlayerCard, Position, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild, League, Rating, Nationality } from '@/lib/types';
 import { normalizeText } from '@/lib/utils';
 
 
@@ -31,10 +31,10 @@ export function usePlayers() {
             return {
                 id: doc.id,
                 name: data.name,
+                nationality: data.nationality || 'Sin Nacionalidad',
                 cards: (data.cards || []).map((card: any) => ({
                     ...card,
                     id: card.id || uuidv4(), // Ensure card has an ID
-                    style: card.style || 'Básico',
                     league: card.league || 'Sin Liga',
                     imageUrl: card.imageUrl || '',
                     ratingsByPosition: card.ratingsByPosition || {},
@@ -71,7 +71,7 @@ export function usePlayers() {
   }, [toast]);
 
   const addRating = async (values: AddRatingFormValues) => {
-    const { playerName, cardName, position, rating, style, league, role } = values;
+    const { playerName, nationality, cardName, position, rating, league, role } = values;
     let { playerId } = values;
 
     if (!db) {
@@ -112,7 +112,6 @@ export function usePlayers() {
           card = { 
               id: uuidv4(), 
               name: cardName, 
-              style: style, 
               league: league || 'Sin Liga',
               imageUrl: '', 
               ratingsByPosition: { [position]: [newRating] },
@@ -127,12 +126,12 @@ export function usePlayers() {
           newRating.role = role;
         }
 
-        const newPlayer = {
+        const newPlayer: Omit<Player, 'id'> = {
           name: playerName,
+          nationality: nationality,
           cards: [{ 
               id: uuidv4(), 
               name: cardName, 
-              style: style, 
               league: league || 'Sin Liga',
               imageUrl: '', 
               ratingsByPosition: { [position]: [newRating] },
@@ -161,7 +160,6 @@ export function usePlayers() {
 
       if (cardToUpdate) {
           cardToUpdate.name = values.currentCardName;
-          cardToUpdate.style = values.currentStyle;
           cardToUpdate.league = values.league || 'Sin Liga';
           cardToUpdate.imageUrl = values.imageUrl || '';
           
@@ -177,8 +175,11 @@ export function usePlayers() {
   const editPlayer = async (values: EditPlayerFormValues) => {
     if (!db) return;
     try {
-      await updateDoc(doc(db, 'eafc_players', values.playerId), { name: values.currentPlayerName });
-      toast({ title: "Jugador Actualizado", description: "El nombre del jugador se ha actualizado." });
+      await updateDoc(doc(db, 'eafc_players', values.playerId), { 
+        name: values.currentPlayerName,
+        nationality: values.nationality,
+      });
+      toast({ title: "Jugador Actualizado", description: "Los datos del jugador se han actualizado." });
     } catch (error) {
       console.error("Error updating player: ", error);
       toast({ variant: "destructive", title: "Error al Actualizar", description: "No se pudo guardar el cambio de nombre." });
@@ -207,7 +208,7 @@ export function usePlayers() {
       
       const finalCards = hasRatingsLeft ? newCards.map(c => c.id === cardId ? cardToUpdate : c) : newCards.filter(c => c.id !== cardId);
 
-      if (finalCards.length === 0) {
+      if (finalCards.length === 0 && (!playerData.cards || playerData.cards.length <= 1)) {
           await deleteDoc(playerRef);
           toast({ title: "Jugador Eliminado", description: `Se eliminaron las valoraciones de ${playerData.name} para ${position}, y como no tenía más cartas, fue eliminado.` });
       } else {
