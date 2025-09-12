@@ -13,7 +13,7 @@ export const playerStyles = [
 export type PlayerStyle = typeof playerStyles[number];
 
 // EAFC Positions
-export const positions = ['GK', 'RWB', 'RB', 'CB', 'LB', 'LWB', 'CDM', 'RM', 'CM', 'LM', 'CAM', 'RF', 'CF', 'LF', 'RW', 'ST', 'LW'] as const;
+export const positions = ['GK', 'RB', 'LB', 'CB', 'CDM', 'RM', 'LM', 'CM', 'CAM', 'ST', 'RW', 'LW'] as const;
 export type Position = typeof positions[number];
 
 // EAFC Leagues
@@ -89,19 +89,6 @@ export type Formation = {
   [key in Position]?: number;
 };
 
-export type IdealTeamPlayer = {
-  player: Player;
-  card: PlayerCard;
-  position: Position;
-  average: number;
-  performance: PlayerPerformance;
-};
-
-export type IdealTeamSlot = {
-  starter: IdealTeamPlayer | null;
-  substitute: IdealTeamPlayer | null;
-}
-
 // --- Tipos para Formaciones ---
 
 export const tacticStyles = ['balanced', 'counter', 'short passing'] as const;
@@ -160,7 +147,7 @@ export type PlayerPerformance = {
     stats: PlayerStats;
     isHotStreak: boolean;
     isConsistent: boolean;
-    isPromising: boolean;
+isPromising: boolean;
     isVersatile: boolean;
 };
 

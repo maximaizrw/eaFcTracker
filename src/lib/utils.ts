@@ -44,23 +44,18 @@ export function getPositionGroup(position: Position): PositionGroup {
   switch (position) {
     case 'GK':
       return 'Goalkeeper';
-    case 'RWB':
     case 'RB':
-    case 'CB':
     case 'LB':
-    case 'LWB':
+    case 'CB':
       return 'Defender';
     case 'CDM':
     case 'RM':
-    case 'CM':
     case 'LM':
+    case 'CM':
     case 'CAM':
       return 'Midfielder';
-    case 'RF':
-    case 'CF':
-    case 'LF':
-    case 'RW':
     case 'ST':
+    case 'RW':
     case 'LW':
       return 'Forward';
   }
