@@ -7,7 +7,7 @@ import Link from 'next/link';
 import type { FormationStats, MatchResult } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Trash2, Link as LinkIcon, Trophy, LayoutGrid, List, Pencil, History, Star } from 'lucide-react';
+import { PlusCircle, Trash2, Link as LinkIcon, Trophy, LayoutGrid, List, Pencil, History } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -30,7 +30,6 @@ type FormationsDisplayProps = {
   onDeleteMatchResult: (formationId: string, matchId: string) => void;
   onEdit: (formation: FormationStats) => void;
   onViewImage: (url: string, name: string) => void;
-  onGenerateIdealTeam: (formationId: string) => void;
 };
 
 const calculateStats = (matches: FormationStats['matches']) => {
@@ -109,7 +108,7 @@ const MatchHistory = ({ matches, formationId, onDeleteMatchResult }: { matches: 
   )
 }
 
-const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onViewImage, onDeleteMatchResult, onGenerateIdealTeam }: Omit<FormationsDisplayProps, 'formations'> & { onGenerateIdealTeam: (id: string) => void }) => {
+const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onViewImage, onDeleteMatchResult }: Omit<FormationsDisplayProps, 'formations'>) => {
     const stats = calculateStats(formation.matches);
     const effectivenessColor = 
       stats.effectiveness >= 66 ? 'text-green-500' :
@@ -228,11 +227,7 @@ const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onVie
                 onDeleteMatchResult={onDeleteMatchResult}
             />
         </CardContent>
-        <CardFooter className="grid grid-cols-2 gap-2">
-            <Button variant="secondary" onClick={() => onGenerateIdealTeam(formation.id)}>
-                <Star className="mr-2 h-4 w-4" />
-                Generar 11 Ideal
-            </Button>
+        <CardFooter className="grid grid-cols-1 gap-2">
             <Button onClick={() => onAddMatch(formation.id, formation.name)}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Añadir Partido
@@ -262,7 +257,7 @@ const FormationCard = ({ formation, onAddMatch, onDeleteFormation, onEdit, onVie
     );
 };
 
-const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGenerateIdealTeam }: Omit<FormationsDisplayProps, 'formations' | 'onViewImage' | 'onDeleteMatchResult' | 'onAddMatch'> & { onAddMatch: (id: string, name: string) => void }) => {
+const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation }: Omit<FormationsDisplayProps, 'formations' | 'onViewImage' | 'onDeleteMatchResult' | 'onAddMatch'> & { onAddMatch: (id: string, name: string) => void }) => {
     const stats = calculateStats(formation.matches);
      const effectivenessColor = 
       stats.effectiveness >= 66 ? 'text-green-500' :
@@ -286,10 +281,6 @@ const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGene
                 </div>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-                <Button size="sm" variant="secondary" onClick={() => onGenerateIdealTeam(formation.id)}>
-                    <Star className="mr-2 h-4 w-4" />
-                    <span className="hidden md:inline">11 Ideal</span>
-                </Button>
                 <Button size="sm" onClick={() => onAddMatch(formation.id, formation.name)}>
                     <PlusCircle className="mr-2 h-4 w-4" />
                     <span className="hidden md:inline">Partido</span>
@@ -317,7 +308,7 @@ const FormationRow = ({ formation, onAddMatch, onEdit, onDeleteFormation, onGene
     );
 };
 
-export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, onEdit, onViewImage, onDeleteMatchResult, onGenerateIdealTeam }: FormationsDisplayProps) {
+export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, onEdit, onViewImage, onDeleteMatchResult }: FormationsDisplayProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
 
   const sortedFormations = [...formations].sort((a, b) => {
@@ -360,7 +351,6 @@ export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, o
                         onEdit={onEdit}
                         onViewImage={onViewImage}
                         onDeleteMatchResult={onDeleteMatchResult}
-                        onGenerateIdealTeam={onGenerateIdealTeam}
                     />
                 ))}
             </div>
@@ -373,7 +363,6 @@ export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, o
                         onAddMatch={onAddMatch}
                         onEdit={onEdit}
                         onDeleteFormation={onDeleteFormation}
-                        onGenerateIdealTeam={onGenerateIdealTeam}
                     />
                 ))}
             </div>
@@ -381,3 +370,5 @@ export function FormationsDisplay({ formations, onAddMatch, onDeleteFormation, o
     </div>
   );
 }
+
+    

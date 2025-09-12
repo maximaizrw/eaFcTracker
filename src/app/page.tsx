@@ -25,8 +25,6 @@ import { AddMatchDialog, type AddMatchFormValues } from '@/components/add-match-
 import { PlayerDetailDialog } from '@/components/player-detail-dialog';
 
 import { FormationsDisplay } from '@/components/formations-display';
-import { IdealTeamDisplay } from '@/components/ideal-team-display';
-import { IdealTeamSetup } from '@/components/ideal-team-setup';
 import { PlayerTable } from '@/components/player-table';
 import { PositionIcon } from '@/components/position-icon';
 
@@ -34,11 +32,10 @@ import { usePlayers } from '@/hooks/usePlayers';
 import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Player, PlayerCard as PlayerCardType, FormationStats, IdealTeamSlot, FlatPlayer, Position, PlayerPerformance, League } from '@/lib/types';
-import { positions, leagues } from '@/lib/types';
-import { PlusCircle, Star, Download, Trophy, RotateCcw } from 'lucide-react';
+import type { Player, PlayerCard as PlayerCardType, FormationStats, FlatPlayer, Position } from '@/lib/types';
+import { positions } from '@/lib/types';
+import { PlusCircle, Download, Trophy } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
-import { generateIdealTeam } from '@/lib/team-generator';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const ITEMS_PER_PAGE = 10;
@@ -89,11 +86,6 @@ export default function Home() {
   const [editPlayerDialogInitialData, setEditPlayerDialogInitialData] = useState<EditPlayerFormValues | undefined>(undefined);
   const [editFormationDialogInitialData, setEditFormationDialogInitialData] = useState<FormationStats | undefined>(undefined);
   const [selectedFlatPlayer, setSelectedFlatPlayer] = useState<FlatPlayer | null>(null);
-  
-  const [selectedFormationId, setSelectedFormationId] = useState<string | undefined>(undefined);
-  const [selectedLeague, setSelectedLeague] = useState<League | 'all'>('all');
-  const [idealTeam, setIdealTeam] = useState<IdealTeamSlot[]>([]);
-  const [discardedCardIds, setDiscardedCardIds] = useState<Set<string>>(new Set());
 
   // State for filters and pagination
   const [styleFilter, setStyleFilter] = useState<string>('all');
@@ -101,26 +93,6 @@ export default function Home() {
   const [pagination, setPagination] = useState<Record<string, number>>({});
   
   const { toast } = useToast();
-
-  const selectedFormation = useMemo(() => {
-    return formations.find(f => f.id === selectedFormationId);
-  }, [formations, selectedFormationId]);
-
-  useEffect(() => {
-    // Select first formation by default if available
-    if (!selectedFormationId && formations && formations.length > 0) {
-      setSelectedFormationId(formations[0].id);
-    }
-  }, [formations, selectedFormationId]);
-
-  // Regenerate team if discarded players change
-  useEffect(() => {
-    if (idealTeam.length > 0) {
-      handleGenerateTeam();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [discardedCardIds]);
-
 
   const handleOpenAddRating = (initialData?: Partial<AddRatingFormValues>) => {
     setAddDialogInitialData(initialData);
@@ -166,63 +138,6 @@ export default function Home() {
   const handleOpenAddMatch = (formationId: string, formationName: string) => {
     setAddMatchInitialData({ formationId, formationName });
     setAddMatchDialogOpen(true);
-  };
-
-  const handleGenerateTeam = () => {
-    if (!players || !selectedFormationId) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Por favor, selecciona jugadores y una formación primero.',
-      });
-      return;
-    }
-
-    const formation = formations.find(f => f.id === selectedFormationId);
-    if (!formation || !formation.slots) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'La formación seleccionada no es válida.',
-      });
-      return;
-    }
-    
-    const newTeam = generateIdealTeam(players, formation, discardedCardIds, selectedLeague);
-
-    setIdealTeam(newTeam);
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-    toast({
-      title: "11 Ideal Generado",
-      description: `Se ha generado un equipo para la formación "${formation.name}".`,
-    });
-  };
-  
-  const handleFormationSelectionChange = (id: string) => {
-    setSelectedFormationId(id);
-  };
-
-  const handleLeagueChange = (league: League | 'all') => {
-    setSelectedLeague(league);
-  };
-  
-  const handleGoToIdealTeam = (formationId: string) => {
-    setActiveTab('ideal-11');
-    handleFormationSelectionChange(formationId);
-  }
-
-  const handleDiscardPlayer = (cardId: string) => {
-    setDiscardedCardIds(prev => new Set(prev).add(cardId));
-  };
-  
-  const handleResetDiscards = () => {
-    setDiscardedCardIds(new Set());
-    toast({
-        title: "Lista de Descartados Reiniciada",
-        description: "Se volverán a considerar todos los jugadores.",
-    });
   };
   
   const handleDownloadBackup = async () => {
@@ -277,8 +192,6 @@ export default function Home() {
             <span className="inline sm:hidden">Formación</span>
           </Button>
         );
-      case 'ideal-11':
-        return null;
       default:
         return (
             <Button onClick={() => handleOpenAddRating({ position: activeTab as Position })}>
@@ -404,7 +317,7 @@ export default function Home() {
       <main className="container mx-auto p-4 md:p-8">
         <Tabs defaultValue="ST" className="w-full" onValueChange={handleTabChange} value={activeTab}>
            <ScrollArea className="w-full whitespace-nowrap rounded-md border">
-            <TabsList className="inline-flex w-max">
+            <TabsList className="inline-flex h-auto items-center justify-start rounded-md bg-muted p-1 text-muted-foreground sm:w-auto">
               {positions.map((pos) => (
                 <TabsTrigger key={pos} value={pos} className="py-2">
                   <PositionIcon position={pos} className="mr-2 h-5 w-5"/>
@@ -414,10 +327,6 @@ export default function Home() {
               <TabsTrigger value="formations" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
                   <Trophy className="mr-2 h-5 w-5"/>
                   Formaciones
-              </TabsTrigger>
-              <TabsTrigger value="ideal-11" className="py-2 data-[state=active]:text-accent-foreground data-[state=active]:bg-accent">
-                  <Star className="mr-2 h-5 w-5"/>
-                  11 Ideal
               </TabsTrigger>
             </TabsList>
             <ScrollBar orientation="horizontal" />
@@ -431,7 +340,6 @@ export default function Home() {
               onEdit={handleOpenEditFormation}
               onViewImage={handleViewImage}
               onDeleteMatchResult={deleteMatchResult}
-              onGenerateIdealTeam={handleGoToIdealTeam}
             />
           </TabsContent>
 
@@ -556,52 +464,10 @@ export default function Home() {
               </TabsContent>
             );
           })}
-          
-          <TabsContent value="ideal-11" className="mt-6">
-             <Card>
-               <CardHeader>
-                 <CardTitle className="flex items-center gap-2 text-accent">
-                   <Star />
-                   Generador de 11 Ideal
-                 </CardTitle>
-                 <CardDescription>
-                   Selecciona una de tus formaciones tácticas y generaremos el mejor equipo posible (titulares y suplentes) basado en el promedio y PlayStyle de tus jugadores.
-                 </CardDescription>
-               </CardHeader>
-               <CardContent>
-                  <IdealTeamSetup 
-                    formations={formations}
-                    selectedFormationId={selectedFormationId}
-                    onFormationChange={handleFormationSelectionChange} 
-                    leagues={['all', ...leagues]}
-                    selectedLeague={selectedLeague}
-                    onLeagueChange={handleLeagueChange}
-                  />
-                  <div className="flex items-center gap-4 mt-6">
-                    <Button onClick={handleGenerateTeam} disabled={!selectedFormationId}>
-                      <Star className="mr-2 h-4 w-4" />
-                      Generar 11 Ideal
-                    </Button>
-                    <Button
-                        onClick={handleResetDiscards}
-                        variant="outline"
-                        disabled={discardedCardIds.size === 0}
-                        >
-                        <RotateCcw className="mr-2 h-4 w-4" />
-                        Reiniciar Descartados ({discardedCardIds.size})
-                    </Button>
-                  </div>
-               </CardContent>
-             </Card>
-            <IdealTeamDisplay 
-                teamSlots={idealTeam} 
-                formation={selectedFormation} 
-                onDiscardPlayer={handleDiscardPlayer}
-            />
-          </TabsContent>
-
         </Tabs>
       </main>
     </div>
   );
 }
+
+    
