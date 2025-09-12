@@ -33,9 +33,11 @@ import {
 import { Input } from "@/components/ui/input";
 import type { AddFormationFormValues } from "@/lib/types";
 import { formationPlayStyles, FormationSlotSchema } from "@/lib/types";
-import { VisualFormationEditor } from "./visual-formation-editor";
 import { formationPresets } from "@/lib/formation-presets";
 import { ScrollArea } from "./ui/scroll-area";
+
+const defaultPreset = formationPresets.find(p => p.name === '4-4-2');
+const defaultSlots = defaultPreset?.slots || Array(11).fill({ position: 'ST', styles: [] });
 
 const formSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres."),
@@ -53,10 +55,7 @@ type AddFormationDialogProps = {
   onAddFormation: (values: AddFormationFormValues) => void;
 };
 
-const defaultSlots = formationPresets.find(p => p.name === '4-3-3 (Holding)')?.slots || Array(11).fill({ position: 'ST', styles: [] });
-
 export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFormationDialogProps) {
-  const [preset, setPreset] = useState('4-3-3 (Holding)');
   
   const form = useForm<AddFormationFormValues>({
     resolver: zodResolver(formSchema),
@@ -71,17 +70,7 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
     },
   });
   
-  const { setValue, getValues, reset } = form;
-
-  useEffect(() => {
-      const selectedPreset = formationPresets.find(p => p.name === preset);
-      if (selectedPreset) {
-          setValue('slots', selectedPreset.slots, { shouldValidate: true });
-          if(!getValues('name')) {
-            setValue('name', selectedPreset.name);
-          }
-      }
-  }, [preset, setValue, getValues]);
+  const { reset } = form;
 
   useEffect(() => {
     if (!open) {
@@ -94,9 +83,15 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
         secondaryImageUrl: "",
         sourceUrl: "",
       });
-      setPreset('4-3-3 (Holding)');
+    } else {
+        // When opening, ensure default slots are set
+        form.setValue('slots', defaultSlots);
+        const presetName = defaultPreset?.name || '';
+        if(!form.getValues('name')) {
+            form.setValue('name', presetName);
+          }
     }
-  }, [open, reset]);
+  }, [open, reset, form]);
 
   function onSubmit(values: AddFormationFormValues) {
     onAddFormation(values);
@@ -105,18 +100,17 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+      <DialogContent className="max-w-xl flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>Añadir Nueva Táctica Personalizada</DialogTitle>
           <DialogDescription>
-            Elige una plantilla, ajusta las posiciones y PlayStyles en el campo visual.
+            Configura los detalles de tu nueva táctica.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex-grow overflow-hidden flex flex-col">
             <ScrollArea className="flex-grow pr-6">
                 <div className="space-y-4 pb-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
                         control={form.control}
                         name="name"
@@ -124,13 +118,13 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                         <FormItem>
                             <FormLabel>Nombre de la Táctica</FormLabel>
                             <FormControl>
-                            <Input placeholder="Ej: 4-3-3 de Creador" {...field} />
+                            <Input placeholder="Ej: 4-4-2 Equilibrado" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                         )}
                     />
-                    <FormField
+                     <FormField
                         control={form.control}
                         name="creator"
                         render={({ field }) => (
@@ -165,82 +159,45 @@ export function AddFormationDialog({ open, onOpenChange, onAddFormation }: AddFo
                         </FormItem>
                         )}
                     />
-                    </div>
-                    
-                    <FormItem>
-                    <FormLabel>Plantilla Táctica</FormLabel>
-                    <Select onValueChange={setPreset} value={preset}>
-                        <FormControl>
-                            <SelectTrigger>
-                            <SelectValue placeholder="Selecciona una plantilla base" />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {formationPresets.map((p) => (
-                            <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                        </Select>
-                    </FormItem>
-
-                    <FormField 
+                    <FormField
                         control={form.control}
-                        name="slots"
+                        name="imageUrl"
                         render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Editor Visual</FormLabel>
-                                <FormControl>
-                                    <VisualFormationEditor 
-                                        value={field.value} 
-                                        onChange={field.onChange} 
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
+                        <FormItem>
+                            <FormLabel>URL Táctica Principal (Opcional)</FormLabel>
+                            <FormControl>
+                            <Input placeholder="https://ejemplo.com/tactica.png" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
                         )}
                     />
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <FormField
-                            control={form.control}
-                            name="imageUrl"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>URL Táctica Principal (Opcional)</FormLabel>
-                                <FormControl>
-                                <Input placeholder="https://ejemplo.com/tactica.png" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="secondaryImageUrl"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>URL Táctica Secundaria (Opcional)</FormLabel>
-                                <FormControl>
-                                <Input placeholder="https://ejemplo.com/tactica_sec.png" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="sourceUrl"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>URL Fuente (Opcional)</FormLabel>
-                                <FormControl>
-                                <Input placeholder="https://youtube.com/..." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                    </div>
+                    <FormField
+                        control={form.control}
+                        name="secondaryImageUrl"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>URL Táctica Secundaria (Opcional)</FormLabel>
+                            <FormControl>
+                            <Input placeholder="https://ejemplo.com/tactica_sec.png" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="sourceUrl"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>URL Fuente (Opcional)</FormLabel>
+                            <FormControl>
+                            <Input placeholder="https://youtube.com/..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
                 </div>
             </ScrollArea>
             <DialogFooter className="flex-shrink-0 bg-background/95 py-4 border-t -mx-6 px-6">

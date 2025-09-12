@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -31,9 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import type { EditFormationFormValues, FormationStats, FormationSlot } from "@/lib/types";
+import type { EditFormationFormValues, FormationStats } from "@/lib/types";
 import { formationPlayStyles, FormationSlotSchema } from "@/lib/types";
-import { VisualFormationEditor } from "./visual-formation-editor";
 import { formationPresets } from "@/lib/formation-presets";
 import { ScrollArea } from "./ui/scroll-area";
 
@@ -49,7 +48,7 @@ const formSchema = z.object({
   sourceUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
 });
 
-const defaultSlots = formationPresets.find(p => p.name === '4-3-3 (Holding)')?.slots || Array(11).fill({ position: 'ST', styles: [] });
+const defaultSlots = formationPresets.find(p => p.name === '4-4-2')?.slots || Array(11).fill({ position: 'ST', styles: [] });
 
 
 type EditFormationDialogProps = {
@@ -84,8 +83,6 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
         slots: (initialData.slots && initialData.slots.length === 11 ? initialData.slots : defaultSlots).map(s => ({
           ...s,
           styles: s.styles || [],
-          top: s.top ?? 50,
-          left: s.left ?? 50,
         })),
         imageUrl: initialData.imageUrl || "",
         secondaryImageUrl: initialData.secondaryImageUrl || "",
@@ -101,18 +98,17 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+      <DialogContent className="max-w-xl flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>Editar Táctica Personalizada</DialogTitle>
           <DialogDescription>
-            Modifica la plantilla, especificando posición y PlayStyle para cada puesto.
+            Modifica los detalles de la táctica.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex-grow overflow-hidden flex flex-col">
                 <ScrollArea className="flex-grow pr-6">
                     <div className="space-y-4 pb-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                             control={form.control}
                             name="name"
@@ -139,7 +135,6 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                             </FormItem>
                             )}
                         />
-                        </div>
                         <FormField
                             control={form.control}
                             name="playStyle"
@@ -163,64 +158,45 @@ export function EditFormationDialog({ open, onOpenChange, onEditFormation, initi
                             )}
                         />
 
-                        <FormField 
+                        <FormField
                             control={form.control}
-                            name="slots"
+                            name="imageUrl"
                             render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Editor Visual</FormLabel>
-                                    <FormControl>
-                                        <VisualFormationEditor 
-                                            value={field.value as FormationSlot[]} 
-                                            onChange={field.onChange} 
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                            <FormItem>
+                                <FormLabel>URL Táctica Principal (Opcional)</FormLabel>
+                                <FormControl>
+                                <Input placeholder="https://ejemplo.com/tactica.png" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
                             )}
                         />
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField
-                                control={form.control}
-                                name="imageUrl"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>URL Táctica Principal (Opcional)</FormLabel>
-                                    <FormControl>
-                                    <Input placeholder="https://ejemplo.com/tactica.png" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="secondaryImageUrl"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>URL Táctica Secundaria (Opcional)</FormLabel>
-                                    <FormControl>
-                                    <Input placeholder="https://ejemplo.com/tactica_sec.png" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            </div>
-                            <FormField
-                                control={form.control}
-                                name="sourceUrl"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>URL Fuente (Opcional)</FormLabel>
-                                    <FormControl>
-                                    <Input placeholder="https://youtube.com/..." {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
+                        <FormField
+                            control={form.control}
+                            name="secondaryImageUrl"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>URL Táctica Secundaria (Opcional)</FormLabel>
+                                <FormControl>
+                                <Input placeholder="https://ejemplo.com/tactica_sec.png" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="sourceUrl"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>URL Fuente (Opcional)</FormLabel>
+                                <FormControl>
+                                <Input placeholder="https://youtube.com/..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
                     </div>
                 </ScrollArea>
                 <DialogFooter className="flex-shrink-0 bg-background/95 py-4 border-t border-border -mx-6 px-6">
