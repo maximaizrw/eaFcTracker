@@ -1,3 +1,4 @@
+
 import type { Player as PlayerType, PlayerCard as PlayerCardType, Position as PositionType } from './types';
 import * as z from "zod";
 
@@ -15,6 +16,25 @@ export type PlayerStyle = typeof playerStyles[number];
 // EAFC Positions
 export const positions = ['GK', 'RB', 'LB', 'CB', 'CDM', 'RM', 'LM', 'CM', 'CAM', 'ST', 'RW', 'LW'] as const;
 export type Position = typeof positions[number];
+
+// Position Roles
+export const positionRoles = {
+  GK: ['Goalkeeper', 'Sweeper Keeper', 'Ball-Playing Keeper'],
+  RB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
+  LB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
+  CB: ['Defender', 'Stopper', 'Ball-Playing Defender', 'Wide Back'],
+  CDM: ['Anchor', 'Deep-Lying Playmaker', 'Ball-Winning Midfielder'],
+  CM: ['Box-to-Box', 'Advanced Playmaker', 'Central Midfielder'],
+  CAM: ['Classic No. 10', 'Attacking Midfielder', 'Shadow Striker'],
+  RM: ['Winger', 'Wide Midfielder', 'Inverted Winger'],
+  LM: ['Winger', 'Wide Midfielder', 'Inverted Winger'],
+  ST: ['Poacher', 'Target Man', 'Complete Forward', 'Pressing Forward'],
+  RW: ['Inside Forward', 'Traditional Winger', 'Raumdeuter'],
+  LW: ['Inside Forward', 'Traditional Winger', 'Raumdeuter'],
+} as const;
+
+export type Role = typeof positionRoles[keyof typeof positionRoles][number];
+
 
 // EAFC Leagues
 export const leagues = [
