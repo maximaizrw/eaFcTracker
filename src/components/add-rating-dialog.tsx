@@ -46,8 +46,8 @@ import {
 } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider";
 import { cn, getAvailableStylesForPosition } from "@/lib/utils";
-import type { Player, Position, PlayerStyle, League } from "@/lib/types";
-import { positions, playerStyles, leagues } from "@/lib/types";
+import type { Player, Position, PlayerStyle, League, Role } from "@/lib/types";
+import { positions, playerStyles, leagues, positionRoles } from "@/lib/types";
 
 const formSchema = z.object({
   playerId: z.string().optional(),
@@ -57,6 +57,7 @@ const formSchema = z.object({
   style: z.enum(playerStyles),
   league: z.enum(leagues).optional(),
   rating: z.number().min(1).max(10),
+  role: z.string().optional(),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -86,6 +87,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
       style: "Básico",
       league: "Sin Liga",
       rating: 5,
+      role: undefined,
     },
   });
   
@@ -93,6 +95,8 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
   const playerNameValue = form.watch('playerName');
   const cardNameValue = form.watch('cardName');
   const positionValue = form.watch('position');
+
+  const availableRoles = useMemo(() => positionRoles[positionValue] || [], [positionValue]);
 
   useEffect(() => {
     if (open) {
@@ -104,6 +108,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         style: 'Básico' as PlayerStyle,
         league: 'Sin Liga' as League,
         rating: 5,
+        role: undefined,
       };
       
       form.reset({ ...defaultValues, ...initialData });
@@ -151,7 +156,12 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         form.setValue('style', 'Básico');
       }
     }
-  }, [playerIdValue, playerNameValue, cardNameValue, positionValue, players, form]);
+     // Reset role if position changes and current role is not valid for the new position
+    const currentRole = form.getValues('role');
+    if (currentRole && !availableRoles.includes(currentRole as Role)) {
+        form.setValue('role', undefined);
+    }
+  }, [playerIdValue, playerNameValue, cardNameValue, positionValue, players, form, availableRoles]);
 
 
   const availableStyles = useMemo(() => {
@@ -160,7 +170,10 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
 
 
   function onSubmit(values: FormValues) {
-    onAddRating(values);
+    onAddRating({
+      ...values,
+      role: values.role as Role | undefined,
+    });
     onOpenChange(false);
   }
   
@@ -326,28 +339,53 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="position"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Posición</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value} disabled={isQuickAdd}>
-                    <FormControl>
-                    <SelectTrigger className={cn(isQuickAdd && "text-muted-foreground")}>
-                        <SelectValue placeholder="Selecciona una posición" />
-                    </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {positions.map((pos) => (
-                        <SelectItem key={pos} value={pos}>{pos}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+             <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="position"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Posición</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={isQuickAdd}>
+                      <FormControl>
+                      <SelectTrigger className={cn(isQuickAdd && "text-muted-foreground")}>
+                          <SelectValue placeholder="Selecciona una posición" />
+                      </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {positions.map((pos) => (
+                          <SelectItem key={pos} value={pos}>{pos}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rol</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value} disabled={availableRoles.length === 0}>
+                      <FormControl>
+                      <SelectTrigger>
+                          <SelectValue placeholder="Selecciona un rol" />
+                      </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ninguno">Ninguno</SelectItem>
+                        {availableRoles.map((role: Role) => (
+                          <SelectItem key={role} value={role}>{role}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="style"

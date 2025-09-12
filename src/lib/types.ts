@@ -14,27 +14,26 @@ export const playerStyles = [
 export type PlayerStyle = typeof playerStyles[number];
 
 // EAFC Positions
-export const positions = ['GK', 'RB', 'LB', 'CB', 'CDM', 'RM', 'LM', 'CM', 'CAM', 'ST', 'RW', 'LW'] as const;
+export const positions = ['GK', 'RB', 'LB', 'CB', 'CDM', 'RM', 'LM', 'CM', 'CAM', 'RW', 'LW', 'ST'] as const;
 export type Position = typeof positions[number];
 
 // Position Roles
 export const positionRoles = {
-  GK: ['Goalkeeper', 'Sweeper Keeper', 'Ball-Playing Keeper'],
-  RB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
-  LB: ['Fullback', 'Wingback', 'Falseback', 'Attacking Wingback', 'Inverted Wingback'],
-  CB: ['Defender', 'Stopper', 'Ball-Playing Defender', 'Wide Back'],
-  CDM: ['Anchor', 'Deep-Lying Playmaker', 'Ball-Winning Midfielder'],
-  CM: ['Box-to-Box', 'Advanced Playmaker', 'Central Midfielder'],
-  CAM: ['Classic No. 10', 'Attacking Midfielder', 'Shadow Striker'],
-  RM: ['Winger', 'Wide Midfielder', 'Inverted Winger'],
-  LM: ['Winger', 'Wide Midfielder', 'Inverted Winger'],
-  ST: ['Poacher', 'Target Man', 'Complete Forward', 'Pressing Forward'],
-  RW: ['Inside Forward', 'Traditional Winger', 'Raumdeuter'],
-  LW: ['Inside Forward', 'Traditional Winger', 'Raumdeuter'],
+  GK: ['Goalkeeper', 'Sweeper Keeper'],
+  RB: ['Full-Back', 'Wing-Back', 'Inverted Wing-Back'],
+  LB: ['Full-Back', 'Wing-Back', 'Inverted Wing-Back'],
+  CB: ['Center-Back', 'Stopper', 'Sweeper'],
+  CDM: ['Anchor Man', 'Deep-Lying Playmaker', 'Ball-Winning Midfielder'],
+  RM: ['Wide Midfielder', 'Winger'],
+  LM: ['Wide Midfielder', 'Winger'],
+  CM: ['Box-to-Box', 'Central Midfielder', 'Roaming Playmaker'],
+  CAM: ['Attacking Midfielder', 'Advanced Playmaker', 'Trequartista'],
+  RW: ['Winger', 'Inside Forward', 'Raumdeuter'],
+  LW: ['Winger', 'Inside Forward', 'Raumdeuter'],
+  ST: ['Poacher', 'Target Man', 'Complete Forward', 'Pressing Forward', 'False 9'],
 } as const;
 
 export type Role = typeof positionRoles[keyof typeof positionRoles][number];
-
 
 // EAFC Leagues
 export const leagues = [
@@ -61,13 +60,18 @@ export type TrainingBuild = {
 
 export type PositionGroup = 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Forward';
 
+export type Rating = {
+  value: number;
+  role?: Role;
+}
+
 export type PlayerCard = {
   id: string;
   name: string; // e.g., "TOTY", "Future Stars"
   style: PlayerStyle;
   league?: League;
   imageUrl?: string;
-  ratingsByPosition: { [key in Position]?: number[] };
+  ratingsByPosition: { [key in Position]?: Rating[] };
   trainingBuilds?: { [key in Position]?: TrainingBuild };
 };
 
@@ -85,6 +89,7 @@ export type AddRatingFormValues = {
     style: PlayerStyle;
     league?: League;
     rating: number;
+    role?: Role;
 }
 
 export type EditCardFormValues = {
@@ -167,14 +172,16 @@ export type PlayerPerformance = {
     stats: PlayerStats;
     isHotStreak: boolean;
     isConsistent: boolean;
-isPromising: boolean;
+    isPromising: boolean;
     isVersatile: boolean;
+    mostCommonRole?: Role;
 };
 
 export type FlatPlayer = {
   player: PlayerType;
   card: PlayerCardType;
-  ratingsForPos: number[];
+  ratingsForPos: Rating[];
   performance: PlayerPerformance;
   hasTrainingBuild: boolean;
 };
+

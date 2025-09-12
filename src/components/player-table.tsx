@@ -10,7 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Trash2, X, Wrench, Pencil, NotebookPen, Search } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
-import type { Player, PlayerCard, Position, FlatPlayer } from '@/lib/types';
+import type { Player, PlayerCard, Position, FlatPlayer, Role } from '@/lib/types';
+import { positionRoles } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
 import { PerformanceBadges } from './performance-badges';
 
@@ -33,6 +34,8 @@ type FilterProps = {
   onStyleFilterChange: (value: string) => void;
   cardFilter: string;
   onCardFilterChange: (value: string) => void;
+  roleFilter: string;
+  onRoleFilterChange: (value: string) => void;
   uniqueStyles: string[];
   uniqueCardNames: string[];
   position: Position;
@@ -45,42 +48,60 @@ const Filters = ({
   onStyleFilterChange,
   cardFilter,
   onCardFilterChange,
+  roleFilter,
+  onRoleFilterChange,
   uniqueStyles,
   uniqueCardNames,
   position
-}: FilterProps) => (
-  <div className="flex flex-col md:flex-row gap-2">
-    <div className="relative flex-grow">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-      <Input
-        placeholder={`Buscar en ${position}...`}
-        value={searchTerm}
-        onChange={(e) => onSearchTermChange(e.target.value)}
-        className="pl-10 w-full"
-      />
-    </div>
-    <Select value={styleFilter} onValueChange={onStyleFilterChange}>
-      <SelectTrigger className="w-full md:w-[180px]">
-        <SelectValue placeholder="Filtrar por PlayStyle" />
-      </SelectTrigger>
-      <SelectContent>
-        {uniqueStyles.map(style => (
-          <SelectItem key={style} value={style}>{style === 'all' ? 'Todos los PlayStyles' : style}</SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-    <Select value={cardFilter} onValueChange={onCardFilterChange}>
-      <SelectTrigger className="w-full md:w-[180px]">
-        <SelectValue placeholder="Filtrar por carta" />
-      </SelectTrigger>
-      <SelectContent>
-        {uniqueCardNames.map(name => (
-          <SelectItem key={name} value={name}>{name === 'all' ? 'Todas las Cartas' : name}</SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  </div>
-);
+}: FilterProps) => {
+    const availableRoles = positionRoles[position] || [];
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+            <div className="relative col-span-1 lg:col-span-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    placeholder={`Buscar en ${position}...`}
+                    value={searchTerm}
+                    onChange={(e) => onSearchTermChange(e.target.value)}
+                    className="pl-10 w-full"
+                />
+            </div>
+            <Select value={styleFilter} onValueChange={onStyleFilterChange}>
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Filtrar por PlayStyle" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">Todos los PlayStyles</SelectItem>
+                    {uniqueStyles.map(style => (
+                    <SelectItem key={style} value={style}>{style}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            <Select value={cardFilter} onValueChange={onCardFilterChange}>
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Filtrar por carta" />
+                </SelectTrigger>
+                <SelectContent>
+                     <SelectItem value="all">Todas las Cartas</SelectItem>
+                    {uniqueCardNames.map(name => (
+                    <SelectItem key={name} value={name}>{name}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+             <Select value={roleFilter} onValueChange={onRoleFilterChange}>
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Filtrar por Rol" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">Todos los Roles</SelectItem>
+                    {availableRoles.map(role => (
+                    <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    );
+};
 
 type PaginationProps = {
     currentPage: number;
@@ -132,10 +153,10 @@ export function PlayerTable({
     return (
       <div className="col-span-full flex flex-col items-center justify-center text-center p-10">
         <p className="text-lg font-medium text-muted-foreground">
-          {`Todavía no hay jugadores en la posición de ${position}.`}
+          {`No se encontraron jugadores para los filtros seleccionados en ${position}.`}
         </p>
         <p className="text-sm text-muted-foreground">
-          {"¡Haz clic en 'Añadir Valoración' para empezar!"}
+          {"Prueba a cambiar los filtros o añade una nueva valoración."}
         </p>
       </div>
     );
@@ -147,7 +168,7 @@ export function PlayerTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[40%] min-w-[150px]">Jugador</TableHead>
-            <TableHead className="hidden md:table-cell">PlayStyle</TableHead>
+            <TableHead className="hidden md:table-cell">PlayStyle / Rol</TableHead>
             <TableHead>Prom.</TableHead>
             <TableHead>Partidos</TableHead>
             <TableHead className="w-[35%] min-w-[200px] hidden md:table-cell">Valoraciones</TableHead>
@@ -203,10 +224,17 @@ export function PlayerTable({
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  {card.style && card.style !== "Básico" ? (
-                    <Badge variant="secondary">{card.style}</Badge>
-                  ) : <span className="text-muted-foreground">-</span>}
+                <TableCell className="hidden md:table-cell space-y-1">
+                  <div>
+                    {card.style && card.style !== "Básico" ? (
+                      <Badge variant="secondary">{card.style}</Badge>
+                    ) : <span className="text-muted-foreground">-</span>}
+                  </div>
+                   <div>
+                    {performance.mostCommonRole ? (
+                        <Badge variant="outline">{performance.mostCommonRole}</Badge>
+                    ) : null}
+                  </div>
                 </TableCell>
                 <TableCell>
                   <div className={cn("text-base md:text-lg font-bold", averageColorClass)}>
@@ -221,13 +249,13 @@ export function PlayerTable({
                         return (
                           <div key={originalIndex} className="group/rating relative">
                             <Badge variant="default" className="text-sm">
-                              {rating.toFixed(1)}
+                              {rating.value.toFixed(1)}
                             </Badge>
                             <Button
                               size="icon" variant="destructive"
                               className="absolute -top-2 -right-2 h-4 w-4 rounded-full opacity-0 group-hover/rating:opacity-100 transition-opacity z-10"
                               onClick={() => onDeleteRating(player.id, card.id, position, originalIndex)}
-                              aria-label={`Eliminar valoración ${rating}`}
+                              aria-label={`Eliminar valoración ${rating.value}`}
                             >
                               <X className="h-3 w-3" />
                             </Button>

@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase-config';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
-import type { Player, PlayerCard, Position, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild, League } from '@/lib/types';
+import type { Player, PlayerCard, Position, AddRatingFormValues, EditCardFormValues, EditPlayerFormValues, TrainingBuild, League, Rating } from '@/lib/types';
 import { normalizeText } from '@/lib/utils';
 
 
@@ -71,7 +71,7 @@ export function usePlayers() {
   }, [toast]);
 
   const addRating = async (values: AddRatingFormValues) => {
-    const { playerName, cardName, position, rating, style, league } = values;
+    const { playerName, cardName, position, rating, style, league, role } = values;
     let { playerId } = values;
 
     if (!db) {
@@ -98,10 +98,15 @@ export function usePlayers() {
         const newCards: PlayerCard[] = JSON.parse(JSON.stringify(playerData.cards || []));
         let card = newCards.find(c => normalizeText(c.name) === normalizeText(cardName));
 
+        const newRating: Rating = { value: rating };
+        if (role && role !== 'ninguno') {
+          newRating.role = role;
+        }
+
         if (card) {
           if (!card.ratingsByPosition) card.ratingsByPosition = {};
           if (!card.ratingsByPosition[position]) card.ratingsByPosition[position] = [];
-          card.ratingsByPosition[position]!.push(rating);
+          card.ratingsByPosition[position]!.push(newRating);
           card.league = league || card.league || 'Sin Liga';
         } else {
           card = { 
@@ -110,13 +115,18 @@ export function usePlayers() {
               style: style, 
               league: league || 'Sin Liga',
               imageUrl: '', 
-              ratingsByPosition: { [position]: [rating] },
+              ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
           };
           newCards.push(card);
         }
         await updateDoc(playerRef, { cards: newCards });
       } else {
+        const newRating: Rating = { value: rating };
+        if (role && role !== 'ninguno') {
+          newRating.role = role;
+        }
+
         const newPlayer = {
           name: playerName,
           cards: [{ 
@@ -125,7 +135,7 @@ export function usePlayers() {
               style: style, 
               league: league || 'Sin Liga',
               imageUrl: '', 
-              ratingsByPosition: { [position]: [rating] },
+              ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
           }],
         };

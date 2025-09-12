@@ -32,7 +32,7 @@ import { usePlayers } from '@/hooks/usePlayers';
 import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues } from '@/lib/types';
+import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role } from '@/lib/types';
 import { positions } from '@/lib/types';
 import { PlusCircle, Download, Trophy } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
@@ -90,6 +90,7 @@ export default function Home() {
   // State for filters and pagination
   const [styleFilter, setStyleFilter] = useState<string>('all');
   const [cardFilter, setCardFilter] = useState<string>('all');
+  const [roleFilter, setRoleFilter] = useState<string>('all');
   const [pagination, setPagination] = useState<Record<string, number>>({});
   
   const { toast } = useToast();
@@ -180,6 +181,7 @@ export default function Home() {
     setSearchTerm('');
     setStyleFilter('all');
     setCardFilter('all');
+    setRoleFilter('all');
   };
   
   const getHeaderButtons = () => {
@@ -349,8 +351,19 @@ export default function Home() {
                 (player.cards || []).map(card => {
                     const ratingsForPos = card.ratingsByPosition?.[pos] || [];
                     const stats = calculateStats(ratingsForPos);
-                    const recentRatings = ratingsForPos.slice(-3);
-                    const recentStats = calculateStats(recentRatings);
+                    const recentRatings = ratingsForPos.slice(-3).map(r => r.value);
+                    const recentStats = calculateStats(ratingsForPos.slice(-3));
+                    
+                    const roleCounts: Record<string, number> = {};
+                    ratingsForPos.forEach(r => {
+                      if (r.role) {
+                        roleCounts[r.role] = (roleCounts[r.role] || 0) + 1;
+                      }
+                    });
+                    const mostCommonRole = Object.keys(roleCounts).length > 0 
+                        ? Object.keys(roleCounts).reduce((a, b) => roleCounts[a] > roleCounts[b] ? a : b) as Role
+                        : undefined;
+
 
                     const highPerfPositions = new Set<Position>();
                     for (const p in card.ratingsByPosition) {
@@ -370,6 +383,7 @@ export default function Home() {
                         isConsistent: stats.matches >= 5 && stats.stdDev < 0.5,
                         isPromising: stats.matches > 0 && stats.matches < 10, // Must have at least 1 match
                         isVersatile: highPerfPositions.size >= 3,
+                        mostCommonRole,
                     };
 
                     return { player, card, ratingsForPos, performance, hasTrainingBuild: hasBuildForPos };
@@ -381,11 +395,12 @@ export default function Home() {
                 // This is the strict filter: only show if there are ratings for this specific position.
                 return ratingsForPos.length > 0;
 
-            }).filter(({ player, card }) => {
+            }).filter(({ player, card, ratingsForPos }) => {
                 const searchMatch = normalizeText(player.name).includes(normalizeText(searchTerm));
                 const styleMatch = styleFilter === 'all' || card.style === styleFilter;
                 const cardMatch = cardFilter === 'all' || card.name === cardFilter;
-                return searchMatch && styleMatch && cardMatch;
+                const roleMatch = roleFilter === 'all' || ratingsForPos.some(r => r.role === roleFilter);
+                return searchMatch && styleMatch && cardMatch && roleMatch;
             
             }).sort((a, b) => {
               // 3. Sort the list
@@ -418,7 +433,7 @@ export default function Home() {
                 allPositionalStyles.add(p.card.style)
               }
             });
-            const uniqueStyles = ['all', ...Array.from(allPositionalStyles)];
+            const uniqueStyles = Array.from(allPositionalStyles);
             
             const allPositionalCards = new Set<string>();
             flatPlayerList.forEach(p => {
@@ -426,7 +441,7 @@ export default function Home() {
                 allPositionalCards.add(p.card.name)
               }
             });
-            const uniqueCardNames = ['all', ...Array.from(allPositionalCards)];
+            const uniqueCardNames = Array.from(allPositionalCards);
 
             return (
               <TabsContent key={pos} value={pos} className="mt-6">
@@ -439,6 +454,8 @@ export default function Home() {
                           onStyleFilterChange={setStyleFilter}
                           cardFilter={cardFilter}
                           onCardFilterChange={setCardFilter}
+                          roleFilter={roleFilter}
+                          onRoleFilterChange={setRoleFilter}
                           uniqueStyles={uniqueStyles}
                           uniqueCardNames={uniqueCardNames}
                           position={pos}

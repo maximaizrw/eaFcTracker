@@ -1,7 +1,7 @@
 
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { Position, PositionGroup, PlayerStyle } from "./types";
+import type { Position, PositionGroup, PlayerStyle, Rating } from "./types";
 import { playerStyles } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
@@ -28,10 +28,11 @@ export type PlayerStats = {
     stdDev: number;
 };
 
-export function calculateStats(numbers: number[]): PlayerStats {
-  const average = calculateAverage(numbers);
-  const stdDev = calculateStdDev(numbers);
-  const matches = numbers ? numbers.length : 0;
+export function calculateStats(ratings: Rating[]): PlayerStats {
+  const values = ratings ? ratings.map(r => r.value) : [];
+  const average = calculateAverage(values);
+  const stdDev = calculateStdDev(values);
+  const matches = values.length;
   return { average, matches, stdDev };
 }
 

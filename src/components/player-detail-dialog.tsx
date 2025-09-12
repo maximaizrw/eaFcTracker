@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LabelList } from 'recharts';
-import type { Position, TrainingBuild, TrainingAttribute, FlatPlayer } from "@/lib/types";
+import type { Position, TrainingBuild, TrainingAttribute, FlatPlayer, Rating } from "@/lib/types";
 import { trainingAttributes } from "@/lib/types";
 import {
   Dialog,
@@ -114,7 +114,7 @@ export function PlayerDetailDialog({ open, onOpenChange, flatPlayer, onSaveTrain
             const position = pos as Position;
             const ratings = card.ratingsByPosition[position];
             if (ratings && ratings.length > 0) {
-                const sum = ratings.reduce((a, b) => a + b, 0);
+                const sum = ratings.reduce((a, b) => a + b.value, 0);
                 performanceMap.set(position, {
                     total: sum,
                     count: ratings.length,
