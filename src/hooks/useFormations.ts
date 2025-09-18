@@ -73,11 +73,11 @@ export function useFormations() {
     try {
         const newTactic: Omit<Tactic, 'id'> = {
             name: values.name,
-            detail: values.detail,
+            detail: values.detail || "",
             formation: values.formation,
             style: values.style,
             defense: values.defense,
-            code: values.code,
+            code: values.code || "",
             matches: [],
         };
         await addDoc(collection(db, 'eafc_tactics'), newTactic);
@@ -98,11 +98,11 @@ export function useFormations() {
       const formationRef = doc(db, 'eafc_tactics', values.id);
       await updateDoc(formationRef, {
         name: values.name,
-        detail: values.detail,
+        detail: values.detail || "",
         formation: values.formation,
         style: values.style,
         defense: values.defense,
-        code: values.code,
+        code: values.code || "",
       });
       toast({ title: "Táctica Actualizada", description: `La táctica "${values.name}" ha sido actualizada.` });
     } catch (error) {

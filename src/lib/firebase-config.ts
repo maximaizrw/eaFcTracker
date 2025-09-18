@@ -12,7 +12,7 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const isConfigValid = Object.values(firebaseConfig).every(value => value);
+const isConfigValid = Object.values(firebaseConfig).every(value => Boolean(value));
 
 let app: FirebaseApp;
 let db: Firestore | null = null;
