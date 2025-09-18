@@ -45,6 +45,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Player, Position, League, Role, Nationality } from "@/lib/types";
 import { positions, leagues, positionRoles, nationalities } from "@/lib/types";
@@ -56,6 +57,7 @@ const formSchema = z.object({
   cardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
   position: z.enum(positions),
   league: z.enum(leagues).optional(),
+  team: z.string().optional(),
   rating: z.number().min(1).max(10),
   role: z.string().optional(),
 });
@@ -84,6 +86,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
       cardName: "Carta Base",
       position: "ST",
       league: "Sin Liga",
+      team: "Sin Equipo",
       rating: 5,
       role: undefined,
     },
@@ -105,6 +108,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         cardName: 'Carta Base',
         position: 'ST' as Position,
         league: 'Sin Liga' as League,
+        team: 'Sin Equipo',
         rating: 5,
         role: undefined,
       };
@@ -133,9 +137,8 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
     const card = selectedPlayer?.cards.find(c => c.name.toLowerCase() === cardNameValue?.toLowerCase());
 
     if (card) {
-      if (card.league) {
-        form.setValue('league', card.league);
-      }
+      if (card.league) form.setValue('league', card.league);
+      if (card.team) form.setValue('team', card.team);
     }
      // Reset role if position changes and current role is not valid for the new position
     const currentRole = form.getValues('role');
@@ -333,6 +336,19 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="team"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Equipo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: FC Barcelona" {...field} disabled={isQuickAdd} className={cn(isQuickAdd && "text-muted-foreground")} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

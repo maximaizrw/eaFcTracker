@@ -39,6 +39,7 @@ const formSchema = z.object({
   cardId: z.string(),
   currentCardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
   league: z.enum(leagues).optional(),
+  team: z.string().optional(),
   imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
 });
 
@@ -61,6 +62,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
       form.reset({
           ...initialData,
           league: initialData.league || 'Sin Liga',
+          team: initialData.team || 'Sin Equipo',
       });
     }
   }, [open, initialData, form]);
@@ -76,7 +78,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
         <DialogHeader>
           <DialogTitle>Editar Carta</DialogTitle>
           <DialogDescription>
-            Modifica los detalles de la carta, incluyendo su nombre, liga e imagen.
+            Modifica los detalles de la carta, incluyendo su nombre, liga, equipo e imagen.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -112,6 +114,19 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="team"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Equipo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: FC Barcelona" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

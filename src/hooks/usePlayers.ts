@@ -36,6 +36,7 @@ export function usePlayers() {
                     ...card,
                     id: card.id || uuidv4(), // Ensure card has an ID
                     league: card.league || 'Sin Liga',
+                    team: card.team || 'Sin Equipo',
                     imageUrl: card.imageUrl || '',
                     ratingsByPosition: card.ratingsByPosition || {},
                     trainingBuilds: card.trainingBuilds || {}
@@ -71,7 +72,7 @@ export function usePlayers() {
   }, [toast]);
 
   const addRating = async (values: AddRatingFormValues) => {
-    const { playerName, nationality, cardName, position, rating, league, role } = values;
+    const { playerName, nationality, cardName, position, rating, league, team, role } = values;
     let { playerId } = values;
 
     if (!db) {
@@ -108,11 +109,13 @@ export function usePlayers() {
           if (!card.ratingsByPosition[position]) card.ratingsByPosition[position] = [];
           card.ratingsByPosition[position]!.push(newRating);
           card.league = league || card.league || 'Sin Liga';
+          card.team = team || card.team || 'Sin Equipo';
         } else {
           card = { 
               id: uuidv4(), 
               name: cardName, 
               league: league || 'Sin Liga',
+              team: team || 'Sin Equipo',
               imageUrl: '', 
               ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
@@ -133,6 +136,7 @@ export function usePlayers() {
               id: uuidv4(), 
               name: cardName, 
               league: league || 'Sin Liga',
+              team: team || 'Sin Equipo',
               imageUrl: '', 
               ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
@@ -161,6 +165,7 @@ export function usePlayers() {
       if (cardToUpdate) {
           cardToUpdate.name = values.currentCardName;
           cardToUpdate.league = values.league || 'Sin Liga';
+          cardToUpdate.team = values.team || 'Sin Equipo';
           cardToUpdate.imageUrl = values.imageUrl || '';
           
           await updateDoc(playerRef, { cards: newCards });

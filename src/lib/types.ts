@@ -66,6 +66,7 @@ export type Rating = {
 export type PlayerCard = {
   id: string;
   name: string; // e.g., "TOTY", "Future Stars"
+  team?: string;
   league?: League;
   imageUrl?: string;
   ratingsByPosition: { [key in Position]?: Rating[] };
@@ -86,6 +87,7 @@ export type AddRatingFormValues = {
     cardName: string;
     position: Position;
     league?: League;
+    team?: string;
     rating: number;
     role?: Role;
 }
@@ -95,6 +97,7 @@ export type EditCardFormValues = {
     cardId: string;
     currentCardName: string;
     league?: League;
+    team?: string;
     imageUrl?: string;
 };
 

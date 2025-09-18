@@ -203,7 +203,9 @@ export function PlayerTable({
                           )}
                           <PerformanceBadges performance={performance} className="hidden md:flex" />
                       </div>
-                      <div className="text-xs text-muted-foreground">{card.name}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {card.name} {card.team && card.team !== 'Sin Equipo' && `- ${card.team}`}
+                      </div>
                     </div>
                   </div>
                 </TableCell>
