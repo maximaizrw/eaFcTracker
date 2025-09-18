@@ -32,7 +32,7 @@ import { usePlayers } from '@/hooks/usePlayers';
 import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role, Nationality, League } from '@/lib/types';
+import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role, Nationality, League, PlayerPerformance } from '@/lib/types';
 import { positions } from '@/lib/types';
 import { PlusCircle, Download, Trophy } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
