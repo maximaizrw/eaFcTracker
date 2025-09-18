@@ -30,4 +30,4 @@ if (isConfigValid) {
     console.error("Firebase config is missing or incomplete. Check your environment variables.");
 }
 
-export { db, storage };
+export { db, storage, isConfigValid };

@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { db } from '@/lib/firebase-config';
+import { db, isConfigValid } from '@/lib/firebase-config';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, getDoc, getDocs } from 'firebase/firestore';
 import { useToast } from './use-toast';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,8 +17,15 @@ export function usePlayers() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!db) {
+    if (!isConfigValid) {
       const errorMessage = "La configuración de Firebase no está completa. Revisa que las variables de entorno se hayan añadido correctamente.";
+      setError(errorMessage);
+      setLoading(false);
+      return;
+    }
+
+    if (!db) {
+      const errorMessage = "La conexión con la base de datos no se pudo establecer.";
       setError(errorMessage);
       setLoading(false);
       return;
