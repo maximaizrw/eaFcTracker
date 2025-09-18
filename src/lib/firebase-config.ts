@@ -12,22 +12,32 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-const isConfigValid = Object.values(firebaseConfig).every(value => Boolean(value));
+// This function checks if all required environment variables are present.
+// It's a critical step to ensure Firebase can initialize.
+const isConfigValid = 
+    !!firebaseConfig.apiKey &&
+    !!firebaseConfig.authDomain &&
+    !!firebaseConfig.projectId &&
+    !!firebaseConfig.storageBucket &&
+    !!firebaseConfig.messagingSenderId &&
+    !!firebaseConfig.appId;
 
 let app: FirebaseApp;
 let db: Firestore | null = null;
 let storage: FirebaseStorage | null = null;
 
+// Only initialize Firebase if the configuration is valid.
 if (isConfigValid) {
     if (!getApps().length) {
+      // Initialize a new app if one doesn't exist.
       app = initializeApp(firebaseConfig);
     } else {
+      // Use the existing app if it's already been initialized.
       app = getApps()[0];
     }
     db = getFirestore(app);
     storage = getStorage(app);
-} else {
-    console.error("Firebase config is missing or incomplete. Check your environment variables.");
 }
 
+// Export the config validation result so other parts of the app can check it.
 export { db, storage, isConfigValid };
