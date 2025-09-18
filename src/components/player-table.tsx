@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PlusCircle, Trash2, X, Wrench, Pencil, NotebookPen, Search } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
 import type { Player, PlayerCard, Position, FlatPlayer, Role } from '@/lib/types';
-import { positionRoles } from '@/lib/types';
+import { positionRoles, leagues } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
 import { PerformanceBadges } from './performance-badges';
 
@@ -34,7 +34,10 @@ type FilterProps = {
   onCardFilterChange: (value: string) => void;
   roleFilter: string;
   onRoleFilterChange: (value: string) => void;
+  leagueFilter: string;
+  onLeagueFilterChange: (value: string) => void;
   uniqueCardNames: string[];
+  uniqueLeagues: string[];
   position: Position;
 };
 
@@ -45,13 +48,16 @@ const Filters = ({
   onCardFilterChange,
   roleFilter,
   onRoleFilterChange,
+  leagueFilter,
+  onLeagueFilterChange,
   uniqueCardNames,
+  uniqueLeagues,
   position
 }: FilterProps) => {
     const availableRoles = positionRoles[position] || [];
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            <div className="relative col-span-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+            <div className="relative col-span-1 sm:col-span-2 md:col-span-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                     placeholder={`Buscar en ${position}...`}
@@ -71,7 +77,7 @@ const Filters = ({
                     ))}
                 </SelectContent>
             </Select>
-             <Select value={roleFilter} onValueChange={onRoleFilterChange}>
+            <Select value={roleFilter} onValueChange={onRoleFilterChange}>
                 <SelectTrigger className="w-full">
                     <SelectValue placeholder="Filtrar por Rol" />
                 </SelectTrigger>
@@ -79,6 +85,17 @@ const Filters = ({
                     <SelectItem value="all">Todos los Roles</SelectItem>
                     {availableRoles.map(role => (
                     <SelectItem key={role} value={role}>{role}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            <Select value={leagueFilter} onValueChange={onLeagueFilterChange}>
+                <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Filtrar por Liga" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">Todas las Ligas</SelectItem>
+                    {uniqueLeagues.map(league => (
+                        <SelectItem key={league} value={league}>{league}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>

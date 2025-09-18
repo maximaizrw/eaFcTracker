@@ -33,7 +33,7 @@ import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
 import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role, Nationality, League, PlayerPerformance } from '@/lib/types';
-import { positions } from '@/lib/types';
+import { positions, leagues } from '@/lib/types';
 import { PlusCircle, Download, Trophy } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -90,6 +90,7 @@ export default function Home() {
   // State for filters and pagination
   const [cardFilter, setCardFilter] = useState<string>('all');
   const [roleFilter, setRoleFilter] = useState<string>('all');
+  const [leagueFilter, setLeagueFilter] = useState<string>('all');
   const [pagination, setPagination] = useState<Record<string, number>>({});
   
   const { toast } = useToast();
@@ -105,6 +106,7 @@ export default function Home() {
         cardId: card.id,
         currentCardName: card.name,
         league: card.league || 'Sin Liga',
+        team: card.team || 'Sin Equipo',
         imageUrl: card.imageUrl || '',
     });
     setEditCardDialogOpen(true);
@@ -180,6 +182,7 @@ export default function Home() {
     setSearchTerm('');
     setCardFilter('all');
     setRoleFilter('all');
+    setLeagueFilter('all');
   };
   
   const getHeaderButtons = () => {
@@ -397,7 +400,8 @@ export default function Home() {
                 const searchMatch = normalizeText(player.name).includes(normalizeText(searchTerm));
                 const cardMatch = cardFilter === 'all' || card.name === cardFilter;
                 const roleMatch = roleFilter === 'all' || ratingsForPos.some(r => r.role === roleFilter);
-                return searchMatch && cardMatch && roleMatch;
+                const leagueMatch = leagueFilter === 'all' || card.league === leagueFilter;
+                return searchMatch && cardMatch && roleMatch && leagueMatch;
             
             }).sort((a, b) => {
               // 3. Sort the list
@@ -432,6 +436,15 @@ export default function Home() {
             });
             const uniqueCardNames = Array.from(allPositionalCards);
 
+            const allPositionalLeagues = new Set<string>();
+            flatPlayerList.forEach(p => {
+              if (p.ratingsForPos.length > 0 && p.card.league) {
+                allPositionalLeagues.add(p.card.league)
+              }
+            });
+            const uniqueLeagues = Array.from(allPositionalLeagues).sort();
+
+
             return (
               <TabsContent key={pos} value={pos} className="mt-6">
                 <Card>
@@ -443,7 +456,10 @@ export default function Home() {
                           onCardFilterChange={setCardFilter}
                           roleFilter={roleFilter}
                           onRoleFilterChange={setRoleFilter}
+                          leagueFilter={leagueFilter}
+                          onLeagueFilterChange={setLeagueFilter}
                           uniqueCardNames={uniqueCardNames}
+                          uniqueLeagues={uniqueLeagues}
                           position={pos}
                         />
                     </CardHeader>
