@@ -45,6 +45,12 @@ const nextConfig: NextConfig = {
         hostname: 'cdn3.futbin.com',
         port: '',
         pathname: '/**',
+      },
+      {
+          protocol: 'https',
+          hostname: 'flagcdn.com',
+          port: '',
+          pathname: '/**',
       }
     ],
   },
