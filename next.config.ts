@@ -39,6 +39,12 @@ const nextConfig: NextConfig = {
         hostname: 'freeimage.host',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn3.futbin.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
