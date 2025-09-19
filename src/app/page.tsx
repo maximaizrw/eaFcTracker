@@ -451,7 +451,6 @@ export default function Home() {
                       onOpenEditCard={handleOpenEditCard}
                       onOpenEditPlayer={handleOpenEditPlayer}
                       onOpenPlayerDetail={handleOpenPlayerDetail}
-                      onViewImage={onViewImage}
                       onDeleteCard={deleteCard}
                       onDeleteRating={deleteRating}
                     />
@@ -471,3 +470,4 @@ export default function Home() {
 }
 
     
+  

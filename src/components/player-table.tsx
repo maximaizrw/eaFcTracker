@@ -23,7 +23,6 @@ type PlayerTableProps = {
   onOpenEditCard: (player: Player, card: PlayerCard) => void;
   onOpenEditPlayer: (player: Player) => void;
   onOpenPlayerDetail: (flatPlayer: FlatPlayer) => void;
-  onViewImage: (url: string, name: string) => void;
   onDeleteCard: (playerId: string, cardId: string, position: Position) => void;
   onDeleteRating: (playerId: string, cardId: string, position: Position, ratingIndex: number) => void;
 };
@@ -127,7 +126,6 @@ export function PlayerTable({
   onOpenEditCard,
   onOpenEditPlayer,
   onOpenPlayerDetail,
-  onViewImage,
   onDeleteCard,
   onDeleteRating,
 }: PlayerTableProps) {
@@ -170,7 +168,7 @@ export function PlayerTable({
                 <TableCell className="p-2 md:p-4">
                   <div className="flex items-center gap-2">
                     {card.imageUrl ? (
-                      <button onClick={() => onViewImage(card.imageUrl!, `${player.name} - ${card.cardStyle}`)} className="focus:outline-none focus:ring-2 focus:ring-ring rounded-full">
+                      <button className="focus:outline-none focus:ring-2 focus:ring-ring rounded-full">
                         <Image
                           src={card.imageUrl}
                           alt={card.cardStyle}
@@ -294,5 +292,5 @@ export function PlayerTable({
 
 PlayerTable.Filters = Filters;
 PlayerTable.Pagination = Pagination;
-
     
+  
