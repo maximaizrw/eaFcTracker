@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import type { League, CardStyle } from "@/lib/types";
 import { leagues, cardStyles } from "@/lib/types";
+import { normalizeText } from "@/lib/utils";
 
 const formSchema = z.object({
   playerId: z.string(),
@@ -96,7 +97,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
                     </FormControl>
                     <SelectContent>
                       {cardStyles.map((style) => (
-                        <SelectItem key={style} value={style} className="capitalize">{style.replace('-', ' ')}</SelectItem>
+                        <SelectItem key={style} value={style} className="capitalize">{normalizeText(style).replace(/_/g, ' ')}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -148,5 +149,3 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
     </Dialog>
   );
 }
-
-    

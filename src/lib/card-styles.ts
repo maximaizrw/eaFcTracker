@@ -15,4 +15,5 @@ export const cardStyleImages: Record<CardStyle, string> = {
     'toty': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/12.png',
     'hero': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/22.png',
     'icon': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/9.png',
+    'squad-foundations': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/87.png',
 };

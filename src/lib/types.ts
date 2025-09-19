@@ -45,7 +45,7 @@ export const nationalities = [
 ] as const;
 export type Nationality = typeof nationalities[number];
 
-export const cardStyles = ['gold-rare', 'gold-common', 'silver-rare', 'silver-common', 'bronze-rare', 'bronze-common', 'icon', 'hero', 'totw', 'tots', 'toty'] as const;
+export const cardStyles = ['gold-rare', 'gold-common', 'silver-rare', 'silver-common', 'bronze-rare', 'bronze-common', 'icon', 'hero', 'totw', 'tots', 'toty', 'squad-foundations'] as const;
 export type CardStyle = typeof cardStyles[number];
 
 

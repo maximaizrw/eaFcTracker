@@ -48,6 +48,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import type { Player, Position, League, Role, Nationality, CardStyle } from "@/lib/types";
 import { positions, leagues, positionRoles, nationalities, cardStyles } from "@/lib/types";
+import { normalizeText } from "@/lib/utils";
 
 const formSchema = z.object({
   playerId: z.string().optional(),
@@ -108,7 +109,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
 
   
   useEffect(() => {
-    const selectedPlayer = players.find(p => p.id === playerIdValue || p.name.toLowerCase() === playerNameValue?.toLowerCase());
+    const selectedPlayer = players.find(p => p.id === playerIdValue || normalizeText(p.name) === normalizeText(playerNameValue));
 
     if (selectedPlayer) {
       if (form.getValues('playerName') !== selectedPlayer.name) {
@@ -249,7 +250,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                     </FormControl>
                     <SelectContent>
                       {cardStyles.map((style) => (
-                        <SelectItem key={style} value={style} className="capitalize">{style.replace('-', ' ')}</SelectItem>
+                        <SelectItem key={style} value={style} className="capitalize">{normalizeText(style).replace(/_/g, ' ')}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -331,5 +332,3 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
     </Dialog>
   );
 }
-
-    
