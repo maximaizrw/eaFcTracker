@@ -11,6 +11,7 @@ export const nationalityToCountryCode: Record<Nationality, string | null> = {
   'Austria': 'AT',
   'Bélgica': 'BE',
   'Brasil': 'BR',
+  'Burkina Faso': 'BF',
   'Colombia': 'CO',
   'Corea del Sur': 'KR',
   'Croacia': 'HR',
@@ -38,3 +39,4 @@ export const nationalityToCountryCode: Record<Nationality, string | null> = {
   'Turquía': 'TR',
   'Uruguay': 'UY',
 };
+

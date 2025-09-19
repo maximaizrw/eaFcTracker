@@ -1,3 +1,4 @@
+
 import type { Player as PlayerType, PlayerCard as PlayerCardType, Position as PositionType } from './types';
 import * as z from "zod";
 
@@ -37,7 +38,7 @@ export type League = typeof leagues[number];
 
 // Nationalities
 export const nationalities = [
-  'Sin Nacionalidad', 'Alemania', 'Argentina', 'Australia', 'Austria', 'Bélgica', 'Brasil', 'Colombia', 'Corea del Sur',
+  'Sin Nacionalidad', 'Alemania', 'Argentina', 'Australia', 'Austria', 'Bélgica', 'Brasil', 'Burkina Faso', 'Colombia', 'Corea del Sur',
   'Croacia', 'Dinamarca', 'Escocia', 'España', 'Estados Unidos', 'Francia', 'Gales', 'Inglaterra', 'Irlanda',
   'Italia', 'Japón', 'Marruecos', 'México', 'Nigeria', 'Noruega', 'Países Bajos', 'Polonia', 'Portugal',
   'Senegal', 'Serbia', 'Suecia', 'Suiza', 'Turquía', 'Uruguay'
@@ -185,3 +186,4 @@ export type FlatPlayer = {
   performance: PlayerPerformance;
   hasTrainingBuild: boolean;
 };
+
