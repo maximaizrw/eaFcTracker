@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Trash2, X, Wrench, Pencil, NotebookPen, Search } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
-import type { Player, PlayerCard, Position, FlatPlayer, Role, CardStyle } from '@/lib/types';
-import { positionRoles, cardStyles } from '@/lib/types';
+import type { Player, PlayerCard, Position, FlatPlayer, CardStyle } from '@/lib/types';
+import { cardStyles } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
 import { PlayerIdentity } from './player-identity';
 
@@ -294,3 +294,5 @@ PlayerTable.Filters = Filters;
 PlayerTable.Pagination = Pagination;
     
   
+
+    
