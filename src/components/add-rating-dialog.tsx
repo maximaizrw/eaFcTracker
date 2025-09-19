@@ -410,7 +410,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                     <Slider
                       min={1}
                       max={10}
-                      step={0.5}
+                      step={0.1}
                       defaultValue={[field.value]}
                       onValueChange={(value) => field.onChange(value[0])}
                     />
