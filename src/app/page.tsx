@@ -32,7 +32,7 @@ import { usePlayers } from '@/hooks/usePlayers';
 import { useFormations } from '@/hooks/useFormations';
 import { useToast } from "@/hooks/use-toast";
 
-import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role, Nationality, League, PlayerPerformance } from '@/lib/types';
+import type { Player, PlayerCard as PlayerCardType, Tactic, FlatPlayer, Position, AddTacticFormValues, EditTacticFormValues, Role, Nationality, League, PlayerPerformance, CardStyle } from '@/lib/types';
 import { positions, leagues } from '@/lib/types';
 import { PlusCircle, Download, Trophy } from 'lucide-react';
 import { calculateStats, normalizeText } from '@/lib/utils';
@@ -104,7 +104,7 @@ export default function Home() {
     setEditCardDialogInitialData({
         playerId: player.id,
         cardId: card.id,
-        currentCardName: card.name,
+        cardStyle: card.cardStyle,
         league: card.league || 'Sin Liga',
         team: card.team || 'Sin Equipo',
         imageUrl: card.imageUrl || '',
@@ -398,7 +398,7 @@ export default function Home() {
 
             }).filter(({ player, card, ratingsForPos }) => {
                 const searchMatch = normalizeText(player.name).includes(normalizeText(searchTerm));
-                const cardMatch = cardFilter === 'all' || card.name === cardFilter;
+                const cardMatch = cardFilter === 'all' || card.cardStyle === cardFilter;
                 const roleMatch = roleFilter === 'all' || ratingsForPos.some(r => r.role === roleFilter);
                 const leagueMatch = leagueFilter === 'all' || card.league === leagueFilter;
                 return searchMatch && cardMatch && roleMatch && leagueMatch;
@@ -428,13 +428,13 @@ export default function Home() {
             );
             const totalPages = Math.ceil(filteredPlayerList.length / ITEMS_PER_PAGE);
             
-            const allPositionalCards = new Set<string>();
+            const allPositionalCards = new Set<CardStyle>();
             flatPlayerList.forEach(p => {
               if (p.ratingsForPos.length > 0) {
-                allPositionalCards.add(p.card.name)
+                allPositionalCards.add(p.card.cardStyle)
               }
             });
-            const uniqueCardNames = Array.from(allPositionalCards);
+            const uniqueCardStyles = Array.from(allPositionalCards);
 
             const allPositionalLeagues = new Set<string>();
             flatPlayerList.forEach(p => {
@@ -458,7 +458,7 @@ export default function Home() {
                           onRoleFilterChange={setRoleFilter}
                           leagueFilter={leagueFilter}
                           onLeagueFilterChange={setLeagueFilter}
-                          uniqueCardNames={uniqueCardNames}
+                          uniqueCardStyles={uniqueCardStyles}
                           uniqueLeagues={uniqueLeagues}
                           position={pos}
                         />

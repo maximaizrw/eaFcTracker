@@ -1,4 +1,3 @@
-
 import type { Player as PlayerType, PlayerCard as PlayerCardType, Position as PositionType } from './types';
 import * as z from "zod";
 
@@ -73,7 +72,7 @@ export type PlayerCard = {
   team?: string;
   league?: League;
   imageUrl?: string;
-  cardStyle?: CardStyle; // New field for card type
+  cardStyle: CardStyle; // New field for card type
   ratingsByPosition: { [key in Position]?: Rating[] };
   trainingBuilds?: { [key in Position]?: TrainingBuild };
 };
@@ -89,23 +88,21 @@ export type AddRatingFormValues = {
     playerId?: string;
     playerName: string;
     nationality: Nationality;
-    cardName: string;
+    cardStyle: CardStyle;
     position: Position;
     league?: League;
     team?: string;
     rating: number;
     role?: Role;
-    cardStyle?: CardStyle;
 }
 
 export type EditCardFormValues = {
     playerId: string;
     cardId: string;
-    currentCardName: string;
     league?: League;
     team?: string;
     imageUrl?: string;
-    cardStyle?: CardStyle;
+    cardStyle: CardStyle;
 };
 
 export type EditPlayerFormValues = {
@@ -176,7 +173,7 @@ export type PlayerPerformance = {
     stats: PlayerStats;
     isHotStreak: boolean;
     isConsistent: boolean;
-    isPromising: boolean;
+isPromising: boolean;
     isVersatile: boolean;
     mostCommonRole?: Role;
 };

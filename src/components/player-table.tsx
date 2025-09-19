@@ -10,8 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Trash2, X, Wrench, Pencil, NotebookPen, Search } from 'lucide-react';
 import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
-import type { Player, PlayerCard, Position, FlatPlayer, Role } from '@/lib/types';
-import { positionRoles, leagues } from '@/lib/types';
+import type { Player, PlayerCard, Position, FlatPlayer, Role, CardStyle } from '@/lib/types';
+import { positionRoles, cardStyles } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
 import { PlayerIdentity } from './player-identity';
 
@@ -37,7 +37,7 @@ type FilterProps = {
   onRoleFilterChange: (value: string) => void;
   leagueFilter: string;
   onLeagueFilterChange: (value: string) => void;
-  uniqueCardNames: string[];
+  uniqueCardStyles: CardStyle[];
   uniqueLeagues: string[];
   position: Position;
 };
@@ -51,7 +51,7 @@ const Filters = ({
   onRoleFilterChange,
   leagueFilter,
   onLeagueFilterChange,
-  uniqueCardNames,
+  uniqueCardStyles,
   uniqueLeagues,
   position
 }: FilterProps) => {
@@ -73,8 +73,8 @@ const Filters = ({
                 </SelectTrigger>
                 <SelectContent>
                      <SelectItem value="all">Todas las Cartas</SelectItem>
-                    {uniqueCardNames.map(name => (
-                    <SelectItem key={name} value={name}>{name}</SelectItem>
+                    {uniqueCardStyles.map(style => (
+                    <SelectItem key={style} value={style} className="capitalize">{style.replace('-', ' ')}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>
@@ -258,9 +258,8 @@ export function PlayerTable({
                                   playerId: player.id,
                                   playerName: player.name,
                                   nationality: player.nationality,
-                                  cardName: card.name,
-                                  position: position,
                                   cardStyle: card.cardStyle,
+                                  position: position,
                               })}
                           >
                               <PlusCircle className="h-5 w-5 md:h-4 md:w-4 text-primary/80 hover:text-primary" />
@@ -293,7 +292,7 @@ export function PlayerTable({
                                 <Wrench className="h-4 w-4 text-muted-foreground/80 hover:text-muted-foreground" />
                             </Button>
                             </TooltipTrigger>
-                            <TooltipContent><p>Editar carta (nombre, liga e imagen)</p></TooltipContent>
+                            <TooltipContent><p>Editar carta (liga e imagen)</p></TooltipContent>
                         </Tooltip>
                         <Tooltip>
                             <TooltipTrigger asChild>

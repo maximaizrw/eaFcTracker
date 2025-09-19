@@ -37,11 +37,10 @@ import { leagues, cardStyles } from "@/lib/types";
 const formSchema = z.object({
   playerId: z.string(),
   cardId: z.string(),
-  currentCardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
   league: z.enum(leagues).optional(),
   team: z.string().optional(),
   imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
-  cardStyle: z.enum(cardStyles).optional(),
+  cardStyle: z.enum(cardStyles),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -80,24 +79,11 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
         <DialogHeader>
           <DialogTitle>Editar Carta</DialogTitle>
           <DialogDescription>
-            Modifica los detalles de la carta, incluyendo su nombre, liga, equipo e imagen.
+            Modifica los detalles de la carta, como su tipo, liga, equipo e imagen.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="currentCardName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre de la Carta</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ej: TOTY, Future Stars..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="cardStyle"

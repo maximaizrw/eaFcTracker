@@ -42,6 +42,7 @@ export function usePlayers() {
                 cards: (data.cards || []).map((card: any) => ({
                     ...card,
                     id: card.id || uuidv4(), // Ensure card has an ID
+                    name: card.cardStyle, // Use cardStyle as name
                     league: card.league || 'Sin Liga',
                     team: card.team || 'Sin Equipo',
                     imageUrl: card.imageUrl || '',
@@ -80,7 +81,7 @@ export function usePlayers() {
   }, [toast]);
 
   const addRating = async (values: AddRatingFormValues) => {
-    const { playerName, nationality, cardName, position, rating, league, team, role, cardStyle } = values;
+    const { playerName, nationality, position, rating, league, team, role, cardStyle } = values;
     let { playerId } = values;
 
     if (!db) {
@@ -105,7 +106,7 @@ export function usePlayers() {
         
         const playerData = playerDoc.data() as Player;
         const newCards: PlayerCard[] = JSON.parse(JSON.stringify(playerData.cards || []));
-        let card = newCards.find(c => normalizeText(c.name) === normalizeText(cardName));
+        let card = newCards.find(c => c.cardStyle === cardStyle);
 
         const newRating: Rating = { value: rating };
         if (role && role !== 'ninguno') {
@@ -118,15 +119,14 @@ export function usePlayers() {
           card.ratingsByPosition[position]!.push(newRating);
           card.league = league || card.league || 'Sin Liga';
           card.team = team || card.team || 'Sin Equipo';
-          card.cardStyle = cardStyle || card.cardStyle || 'gold-common';
         } else {
           card = { 
               id: uuidv4(), 
-              name: cardName, 
+              name: cardStyle,
+              cardStyle: cardStyle,
               league: league || 'Sin Liga',
               team: team || 'Sin Equipo',
               imageUrl: '',
-              cardStyle: cardStyle || 'gold-common',
               ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
           };
@@ -144,11 +144,11 @@ export function usePlayers() {
           nationality: nationality,
           cards: [{ 
               id: uuidv4(), 
-              name: cardName, 
+              name: cardStyle, 
               league: league || 'Sin Liga',
               team: team || 'Sin Equipo',
               imageUrl: '',
-              cardStyle: cardStyle || 'gold-common',
+              cardStyle: cardStyle,
               ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
           }],
@@ -174,11 +174,11 @@ export function usePlayers() {
       const cardToUpdate = newCards.find(c => c.id === values.cardId);
 
       if (cardToUpdate) {
-          cardToUpdate.name = values.currentCardName;
+          cardToUpdate.name = values.cardStyle; // Keep name in sync with cardStyle
           cardToUpdate.league = values.league || 'Sin Liga';
           cardToUpdate.team = values.team || 'Sin Equipo';
           cardToUpdate.imageUrl = values.imageUrl || '';
-          cardToUpdate.cardStyle = values.cardStyle || 'gold-common';
+          cardToUpdate.cardStyle = values.cardStyle;
           
           await updateDoc(playerRef, { cards: newCards });
           toast({ title: "Carta Actualizada", description: "Los datos de la carta se han actualizado." });

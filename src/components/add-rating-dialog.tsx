@@ -54,8 +54,7 @@ const formSchema = z.object({
   playerId: z.string().optional(),
   playerName: z.string().min(2, "El nombre del jugador debe tener al menos 2 caracteres."),
   nationality: z.enum(nationalities),
-  cardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
-  cardStyle: z.enum(cardStyles).optional(),
+  cardStyle: z.enum(cardStyles),
   position: z.enum(positions),
   league: z.enum(leagues).optional(),
   team: z.string().optional(),
@@ -75,16 +74,13 @@ type AddRatingDialogProps = {
 
 export function AddRatingDialog({ open, onOpenChange, onAddRating, players, initialData }: AddRatingDialogProps) {
   const [playerPopoverOpen, setPlayerPopoverOpen] = useState(false);
-  const [cardPopoverOpen, setCardPopoverOpen] = useState(false);
-  const [cardNames, setCardNames] = useState<string[]>([]);
-
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       playerId: undefined,
       playerName: "",
       nationality: "Sin Nacionalidad",
-      cardName: "Carta Base",
       cardStyle: "gold-common",
       position: "ST",
       league: "Sin Liga",
@@ -96,7 +92,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
   
   const playerIdValue = form.watch('playerId');
   const playerNameValue = form.watch('playerName');
-  const cardNameValue = form.watch('cardName');
+  const cardStyleValue = form.watch('cardStyle');
   const positionValue = form.watch('position');
 
   const availableRoles = useMemo(() => positionRoles[positionValue] || [], [positionValue]);
@@ -107,7 +103,6 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         playerId: undefined,
         playerName: '',
         nationality: 'Sin Nacionalidad',
-        cardName: 'Carta Base',
         cardStyle: 'gold-common',
         position: 'ST' as Position,
         league: 'Sin Liga' as League,
@@ -132,24 +127,20 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         form.setValue('playerId', selectedPlayer.id);
       }
       form.setValue('nationality', selectedPlayer.nationality);
-      setCardNames(selectedPlayer.cards.map(c => c.name));
-    } else {
-      setCardNames([]);
-    }
+    } 
 
-    const card = selectedPlayer?.cards.find(c => c.name.toLowerCase() === cardNameValue?.toLowerCase());
+    const card = selectedPlayer?.cards.find(c => c.cardStyle === cardStyleValue);
 
     if (card) {
       if (card.league) form.setValue('league', card.league);
       if (card.team) form.setValue('team', card.team);
-      if (card.cardStyle) form.setValue('cardStyle', card.cardStyle);
     }
      // Reset role if position changes and current role is not valid for the new position
     const currentRole = form.getValues('role');
     if (currentRole && !availableRoles.includes(currentRole as Role)) {
         form.setValue('role', undefined);
     }
-  }, [playerIdValue, playerNameValue, cardNameValue, positionValue, players, form, availableRoles]);
+  }, [playerIdValue, playerNameValue, cardStyleValue, positionValue, players, form, availableRoles]);
 
   function onSubmit(values: FormValues) {
     onAddRating({
@@ -169,7 +160,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
           <DialogTitle>Añadir Nueva Valoración</DialogTitle>
           <DialogDescription>
             {isQuickAdd 
-              ? `Añadiendo nueva valoración para ${initialData.playerName} - ${initialData.cardName}`
+              ? `Añadiendo nueva valoración para ${initialData.playerName}`
               : "Introduce los detalles del rendimiento de un jugador en el partido."
             }
           </DialogDescription>
@@ -258,66 +249,6 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="cardName"
-              render={({ field }) => (
-                 <FormItem>
-                  <FormLabel>Nombre de la Carta</FormLabel>
-                   <Popover open={cardPopoverOpen} onOpenChange={setCardPopoverOpen}>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={cardPopoverOpen}
-                          className={cn("w-full justify-between", isQuickAdd && "text-muted-foreground")}
-                          disabled={!playerNameValue || isQuickAdd}
-                          aria-label="Nombre de la carta"
-                        >
-                          {field.value || "Selecciona o crea una carta..."}
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                      <Command>
-                        <CommandInput 
-                          placeholder="Busca o crea una carta..."
-                          onValueChange={(search) => form.setValue('cardName', search)}
-                          value={field.value}
-                          aria-label="Nombre de la carta"
-                        />
-                        <CommandEmpty>No se encontró la carta. Puedes crearla.</CommandEmpty>
-                        <CommandList>
-                          <CommandGroup>
-                            {cardNames.map((name) => (
-                              <CommandItem
-                                key={name}
-                                value={name}
-                                onSelect={() => {
-                                  form.setValue("cardName", name, { shouldValidate: true });
-                                  setCardPopoverOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    field.value.toLowerCase() === name.toLowerCase() ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {name}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
