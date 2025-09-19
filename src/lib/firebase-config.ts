@@ -4,12 +4,12 @@ import { getFirestore, type Firestore } from "firebase/firestore";
 import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDEz7kgfon1BSfSrxpeGov67Acz7ai6pAI",
+  authDomain: "eafctracker-93724881-c25a8.firebaseapp.com",
+  projectId: "eafctracker-93724881-c25a8",
+  storageBucket: "eafctracker-93724881-c25a8.firebasestorage.app",
+  messagingSenderId: "928101690810",
+  appId: "1:928101690810:web:80b6cfd7da0df64a31c183"
 };
 
 // This function checks if all required environment variables are present.
