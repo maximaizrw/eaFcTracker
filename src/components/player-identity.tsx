@@ -43,8 +43,10 @@ export function PlayerIdentity({ player, card, hasTrainingBuild, onOpenPlayerDet
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
         {flagUrl && <Image src={flagUrl} alt={player.nationality} width={20} height={15} className="object-contain" />}
         {cardStyleUrl && <Image src={cardStyleUrl} alt={card.cardStyle} width={20} height={20} className="object-contain" />}
-        {card.team && card.team !== 'Sin Equipo' && <span className="hidden sm:inline">{card.team}</span>}
+        {card.league && card.league !== 'Sin Liga' && <span className="hidden sm:inline">{card.league}</span>}
       </div>
     </div>
   );
 }
+
+    

@@ -38,7 +38,6 @@ const formSchema = z.object({
   playerId: z.string(),
   cardId: z.string(),
   league: z.enum(leagues).optional(),
-  team: z.string().optional(),
   imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
   cardStyle: z.enum(cardStyles),
 });
@@ -62,7 +61,6 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
       form.reset({
           ...initialData,
           league: initialData.league || 'Sin Liga',
-          team: initialData.team || 'Sin Equipo',
           cardStyle: initialData.cardStyle || 'gold-common',
       });
     }
@@ -79,7 +77,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
         <DialogHeader>
           <DialogTitle>Editar Carta</DialogTitle>
           <DialogDescription>
-            Modifica los detalles de la carta, como su tipo, liga, equipo e imagen.
+            Modifica los detalles de la carta, como su tipo, liga e imagen.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -130,19 +128,6 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
             />
              <FormField
               control={form.control}
-              name="team"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Equipo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ej: FC Barcelona" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-             <FormField
-              control={form.control}
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
@@ -163,3 +148,5 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
     </Dialog>
   );
 }
+
+    

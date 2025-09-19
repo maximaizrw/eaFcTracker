@@ -33,13 +33,10 @@ type FilterProps = {
   onSearchTermChange: (value: string) => void;
   cardFilter: string;
   onCardFilterChange: (value: string) => void;
-  roleFilter: string;
-  onRoleFilterChange: (value: string) => void;
   leagueFilter: string;
   onLeagueFilterChange: (value: string) => void;
   uniqueCardStyles: CardStyle[];
   uniqueLeagues: string[];
-  position: Position;
 };
 
 const Filters = ({
@@ -47,21 +44,17 @@ const Filters = ({
   onSearchTermChange,
   cardFilter,
   onCardFilterChange,
-  roleFilter,
-  onRoleFilterChange,
   leagueFilter,
   onLeagueFilterChange,
   uniqueCardStyles,
-  uniqueLeagues,
-  position
+  uniqueLeagues
 }: FilterProps) => {
-    const availableRoles = positionRoles[position] || [];
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             <div className="relative col-span-1 sm:col-span-2 md:col-span-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                    placeholder={`Buscar en ${position}...`}
+                    placeholder={`Buscar...`}
                     value={searchTerm}
                     onChange={(e) => onSearchTermChange(e.target.value)}
                     className="pl-10 w-full"
@@ -75,17 +68,6 @@ const Filters = ({
                      <SelectItem value="all">Todas las Cartas</SelectItem>
                     {uniqueCardStyles.map(style => (
                     <SelectItem key={style} value={style} className="capitalize">{style.replace('-', ' ')}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-            <Select value={roleFilter} onValueChange={onRoleFilterChange}>
-                <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Filtrar por Rol" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Todos los Roles</SelectItem>
-                    {availableRoles.map(role => (
-                    <SelectItem key={role} value={role}>{role}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>
@@ -169,7 +151,6 @@ export function PlayerTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[40%] min-w-[150px]">Jugador</TableHead>
-            <TableHead className="hidden md:table-cell">Rol</TableHead>
             <TableHead>Prom.</TableHead>
             <TableHead>Partidos</TableHead>
             <TableHead className="w-[35%] min-w-[200px] hidden md:table-cell">Valoraciones</TableHead>
@@ -189,10 +170,10 @@ export function PlayerTable({
                 <TableCell className="p-2 md:p-4">
                   <div className="flex items-center gap-2">
                     {card.imageUrl ? (
-                      <button onClick={() => onViewImage(card.imageUrl!, `${player.name} - ${card.name}`)} className="focus:outline-none focus:ring-2 focus:ring-ring rounded-full">
+                      <button onClick={() => onViewImage(card.imageUrl!, `${player.name} - ${card.cardStyle}`)} className="focus:outline-none focus:ring-2 focus:ring-ring rounded-full">
                         <Image
                           src={card.imageUrl}
-                          alt={card.name}
+                          alt={card.cardStyle}
                           width={40}
                           height={40}
                           className="bg-transparent object-contain w-8 h-8 md:w-10 md:h-10"
@@ -207,13 +188,6 @@ export function PlayerTable({
                         hasTrainingBuild={hasTrainingBuild}
                         onOpenPlayerDetail={() => onOpenPlayerDetail(flatPlayer)}
                     />
-                  </div>
-                </TableCell>
-                <TableCell className="hidden md:table-cell space-y-1">
-                   <div>
-                    {performance.mostCommonRole ? (
-                        <Badge variant="outline">{performance.mostCommonRole}</Badge>
-                    ) : null}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -253,7 +227,7 @@ export function PlayerTable({
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 rounded-full"
-                              aria-label={`Añadir valoración a ${player.name} (${card.name})`}
+                              aria-label={`Añadir valoración a ${player.name} (${card.cardStyle})`}
                               onClick={() => onOpenAddRating({
                                   playerId: player.id,
                                   playerName: player.name,
@@ -286,7 +260,7 @@ export function PlayerTable({
                             <TooltipTrigger asChild>
                             <Button
                                 variant="ghost" size="icon" className="h-8 w-8 rounded-full"
-                                aria-label={`Editar carta ${card.name}`}
+                                aria-label={`Editar carta ${card.cardStyle}`}
                                 onClick={() => onOpenEditCard(player, card)}
                                 >
                                 <Wrench className="h-4 w-4 text-muted-foreground/80 hover:text-muted-foreground" />
@@ -298,7 +272,7 @@ export function PlayerTable({
                             <TooltipTrigger asChild>
                             <Button
                                 variant="ghost" size="icon" className="h-8 w-8 rounded-full"
-                                aria-label={`Eliminar valoraciones de ${card.name} (${player.name}) para la posición ${position}`}
+                                aria-label={`Eliminar valoraciones de ${card.cardStyle} (${player.name}) para la posición ${position}`}
                                 onClick={() => onDeleteCard(player.id, card.id, position)}>
                                 <Trash2 className="h-4 w-4 text-destructive/80 hover:text-destructive" />
                             </Button>
@@ -320,3 +294,5 @@ export function PlayerTable({
 
 PlayerTable.Filters = Filters;
 PlayerTable.Pagination = Pagination;
+
+    

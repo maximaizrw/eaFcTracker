@@ -45,7 +45,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Player, Position, League, Role, Nationality, CardStyle } from "@/lib/types";
 import { positions, leagues, positionRoles, nationalities, cardStyles } from "@/lib/types";
@@ -57,9 +56,7 @@ const formSchema = z.object({
   cardStyle: z.enum(cardStyles),
   position: z.enum(positions),
   league: z.enum(leagues).optional(),
-  team: z.string().optional(),
   rating: z.number().min(1).max(10),
-  role: z.string().optional(),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -84,9 +81,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
       cardStyle: "gold-common",
       position: "ST",
       league: "Sin Liga",
-      team: "Sin Equipo",
       rating: 5,
-      role: undefined,
     },
   });
   
@@ -94,8 +89,6 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
   const playerNameValue = form.watch('playerName');
   const cardStyleValue = form.watch('cardStyle');
   const positionValue = form.watch('position');
-
-  const availableRoles = useMemo(() => positionRoles[positionValue] || [], [positionValue]);
 
   useEffect(() => {
     if (open) {
@@ -106,9 +99,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         cardStyle: 'gold-common',
         position: 'ST' as Position,
         league: 'Sin Liga' as League,
-        team: 'Sin Equipo',
         rating: 5,
-        role: undefined,
       };
       
       form.reset({ ...defaultValues, ...initialData });
@@ -133,20 +124,11 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
 
     if (card) {
       if (card.league) form.setValue('league', card.league);
-      if (card.team) form.setValue('team', card.team);
     }
-     // Reset role if position changes and current role is not valid for the new position
-    const currentRole = form.getValues('role');
-    if (currentRole && !availableRoles.includes(currentRole as Role)) {
-        form.setValue('role', undefined);
-    }
-  }, [playerIdValue, playerNameValue, cardStyleValue, positionValue, players, form, availableRoles]);
+  }, [playerIdValue, playerNameValue, cardStyleValue, positionValue, players, form]);
 
   function onSubmit(values: FormValues) {
-    onAddRating({
-      ...values,
-      role: values.role as Role | undefined,
-    });
+    onAddRating(values);
     onOpenChange(false);
   }
   
@@ -297,19 +279,6 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="team"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Equipo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ej: FC Barcelona" {...field} disabled={isQuickAdd} className={cn(isQuickAdd && "text-muted-foreground")} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
              <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -335,47 +304,24 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
               />
                <FormField
                 control={form.control}
-                name="role"
+                name="rating"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Rol</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value} disabled={availableRoles.length === 0}>
-                      <FormControl>
-                      <SelectTrigger>
-                          <SelectValue placeholder="Selecciona un rol" />
-                      </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="ninguno">Ninguno</SelectItem>
-                        {availableRoles.map((role: Role) => (
-                          <SelectItem key={role} value={role}>{role}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                     <FormLabel>Valoración: {field.value.toFixed(1)}</FormLabel>
+                     <FormControl>
+                      <Slider
+                        min={1}
+                        max={10}
+                        step={0.1}
+                        defaultValue={[field.value]}
+                        onValueChange={(value) => field.onChange(value[0])}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-             <FormField
-              control={form.control}
-              name="rating"
-              render={({ field }) => (
-                <FormItem>
-                   <FormLabel>Valoración: {field.value.toFixed(1)}</FormLabel>
-                   <FormControl>
-                    <Slider
-                      min={1}
-                      max={10}
-                      step={0.1}
-                      defaultValue={[field.value]}
-                      onValueChange={(value) => field.onChange(value[0])}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <DialogFooter>
               <Button type="submit">Guardar Valoración</Button>
             </DialogFooter>
@@ -385,3 +331,5 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
     </Dialog>
   );
 }
+
+    

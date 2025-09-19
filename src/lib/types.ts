@@ -64,16 +64,13 @@ export type PositionGroup = 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Forward'
 
 export type Rating = {
   value: number;
-  role?: Role;
 }
 
 export type PlayerCard = {
   id: string;
-  name: string; // e.g., "TOTY", "Future Stars"
-  team?: string;
   league?: League;
   imageUrl?: string;
-  cardStyle: CardStyle; // New field for card type
+  cardStyle: CardStyle;
   ratingsByPosition: { [key in Position]?: Rating[] };
   trainingBuilds?: { [key in Position]?: TrainingBuild };
 };
@@ -92,16 +89,13 @@ export type AddRatingFormValues = {
     cardStyle: CardStyle;
     position: Position;
     league?: League;
-    team?: string;
     rating: number;
-    role?: Role;
 }
 
 export type EditCardFormValues = {
     playerId: string;
     cardId: string;
     league?: League;
-    team?: string;
     imageUrl?: string;
     cardStyle: CardStyle;
 };
@@ -174,9 +168,8 @@ export type PlayerPerformance = {
     stats: PlayerStats;
     isHotStreak: boolean;
     isConsistent: boolean;
-isPromising: boolean;
+    isPromising: boolean;
     isVersatile: boolean;
-    mostCommonRole?: Role;
 };
 
 export type FlatPlayer = {
@@ -187,3 +180,4 @@ export type FlatPlayer = {
   hasTrainingBuild: boolean;
 };
 
+    

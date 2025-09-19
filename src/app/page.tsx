@@ -89,7 +89,6 @@ export default function Home() {
 
   // State for filters and pagination
   const [cardFilter, setCardFilter] = useState<string>('all');
-  const [roleFilter, setRoleFilter] = useState<string>('all');
   const [leagueFilter, setLeagueFilter] = useState<string>('all');
   const [pagination, setPagination] = useState<Record<string, number>>({});
   
@@ -106,7 +105,6 @@ export default function Home() {
         cardId: card.id,
         cardStyle: card.cardStyle,
         league: card.league || 'Sin Liga',
-        team: card.team || 'Sin Equipo',
         imageUrl: card.imageUrl || '',
     });
     setEditCardDialogOpen(true);
@@ -181,7 +179,6 @@ export default function Home() {
     setActiveTab(value);
     setSearchTerm('');
     setCardFilter('all');
-    setRoleFilter('all');
     setLeagueFilter('all');
   };
   
@@ -354,17 +351,6 @@ export default function Home() {
                     const stats = calculateStats(ratingsForPos);
                     const recentRatings = ratingsForPos.slice(-3).map(r => r.value);
                     const recentStats = calculateStats(ratingsForPos.slice(-3));
-                    
-                    const roleCounts: Record<string, number> = {};
-                    ratingsForPos.forEach(r => {
-                      if (r.role) {
-                        roleCounts[r.role] = (roleCounts[r.role] || 0) + 1;
-                      }
-                    });
-                    const mostCommonRole = Object.keys(roleCounts).length > 0 
-                        ? Object.keys(roleCounts).reduce((a, b) => roleCounts[a] > roleCounts[b] ? a : b) as Role
-                        : undefined;
-
 
                     const highPerfPositions = new Set<Position>();
                     for (const p in card.ratingsByPosition) {
@@ -384,7 +370,6 @@ export default function Home() {
                         isConsistent: stats.matches >= 5 && stats.stdDev < 0.5,
                         isPromising: stats.matches > 0 && stats.matches < 10, // Must have at least 1 match
                         isVersatile: highPerfPositions.size >= 3,
-                        mostCommonRole,
                     };
 
                     return { player, card, ratingsForPos, performance, hasTrainingBuild: hasBuildForPos };
@@ -396,12 +381,11 @@ export default function Home() {
                 // This is the strict filter: only show if there are ratings for this specific position.
                 return ratingsForPos.length > 0;
 
-            }).filter(({ player, card, ratingsForPos }) => {
+            }).filter(({ player, card }) => {
                 const searchMatch = normalizeText(player.name).includes(normalizeText(searchTerm));
                 const cardMatch = cardFilter === 'all' || card.cardStyle === cardFilter;
-                const roleMatch = roleFilter === 'all' || ratingsForPos.some(r => r.role === roleFilter);
                 const leagueMatch = leagueFilter === 'all' || card.league === leagueFilter;
-                return searchMatch && cardMatch && roleMatch && leagueMatch;
+                return searchMatch && cardMatch && leagueMatch;
             
             }).sort((a, b) => {
               // 3. Sort the list
@@ -454,13 +438,10 @@ export default function Home() {
                           onSearchTermChange={setSearchTerm}
                           cardFilter={cardFilter}
                           onCardFilterChange={setCardFilter}
-                          roleFilter={roleFilter}
-                          onRoleFilterChange={setRoleFilter}
                           leagueFilter={leagueFilter}
                           onLeagueFilterChange={setLeagueFilter}
                           uniqueCardStyles={uniqueCardStyles}
                           uniqueLeagues={uniqueLeagues}
-                          position={pos}
                         />
                     </CardHeader>
                     <PlayerTable
@@ -470,7 +451,7 @@ export default function Home() {
                       onOpenEditCard={handleOpenEditCard}
                       onOpenEditPlayer={handleOpenEditPlayer}
                       onOpenPlayerDetail={handleOpenPlayerDetail}
-                      onViewImage={handleViewImage}
+                      onViewImage={onViewImage}
                       onDeleteCard={deleteCard}
                       onDeleteRating={deleteRating}
                     />
@@ -488,3 +469,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

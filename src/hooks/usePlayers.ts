@@ -42,9 +42,7 @@ export function usePlayers() {
                 cards: (data.cards || []).map((card: any) => ({
                     ...card,
                     id: card.id || uuidv4(), // Ensure card has an ID
-                    name: card.cardStyle, // Use cardStyle as name
                     league: card.league || 'Sin Liga',
-                    team: card.team || 'Sin Equipo',
                     imageUrl: card.imageUrl || '',
                     cardStyle: card.cardStyle || 'gold-common',
                     ratingsByPosition: card.ratingsByPosition || {},
@@ -81,7 +79,7 @@ export function usePlayers() {
   }, [toast]);
 
   const addRating = async (values: AddRatingFormValues) => {
-    const { playerName, nationality, position, rating, league, team, role, cardStyle } = values;
+    const { playerName, nationality, position, rating, league, cardStyle } = values;
     let { playerId } = values;
 
     if (!db) {
@@ -109,23 +107,17 @@ export function usePlayers() {
         let card = newCards.find(c => c.cardStyle === cardStyle);
 
         const newRating: Rating = { value: rating };
-        if (role && role !== 'ninguno') {
-          newRating.role = role;
-        }
 
         if (card) {
           if (!card.ratingsByPosition) card.ratingsByPosition = {};
           if (!card.ratingsByPosition[position]) card.ratingsByPosition[position] = [];
           card.ratingsByPosition[position]!.push(newRating);
           card.league = league || card.league || 'Sin Liga';
-          card.team = team || card.team || 'Sin Equipo';
         } else {
           card = { 
               id: uuidv4(), 
-              name: cardStyle,
               cardStyle: cardStyle,
               league: league || 'Sin Liga',
-              team: team || 'Sin Equipo',
               imageUrl: '',
               ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
@@ -135,18 +127,13 @@ export function usePlayers() {
         await updateDoc(playerRef, { cards: newCards });
       } else {
         const newRating: Rating = { value: rating };
-        if (role && role !== 'ninguno') {
-          newRating.role = role;
-        }
 
         const newPlayer: Omit<Player, 'id'> = {
           name: playerName,
           nationality: nationality,
           cards: [{ 
               id: uuidv4(), 
-              name: cardStyle, 
               league: league || 'Sin Liga',
-              team: team || 'Sin Equipo',
               imageUrl: '',
               cardStyle: cardStyle,
               ratingsByPosition: { [position]: [newRating] },
@@ -174,9 +161,7 @@ export function usePlayers() {
       const cardToUpdate = newCards.find(c => c.id === values.cardId);
 
       if (cardToUpdate) {
-          cardToUpdate.name = values.cardStyle; // Keep name in sync with cardStyle
           cardToUpdate.league = values.league || 'Sin Liga';
-          cardToUpdate.team = values.team || 'Sin Equipo';
           cardToUpdate.imageUrl = values.imageUrl || '';
           cardToUpdate.cardStyle = values.cardStyle;
           
@@ -310,3 +295,5 @@ export function usePlayers() {
 
   return { players, loading, error, addRating, editCard, editPlayer, deleteCard, deleteRating, saveTrainingBuild, downloadBackup };
 }
+
+    
