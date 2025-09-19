@@ -13,7 +13,8 @@ import { cn, formatAverage, getAverageColorClass } from '@/lib/utils';
 import type { Player, PlayerCard, Position, FlatPlayer, Role } from '@/lib/types';
 import { positionRoles, leagues } from '@/lib/types';
 import type { FormValues as AddRatingFormValues } from '@/components/add-rating-dialog';
-import { PerformanceBadges } from './performance-badges';
+import { PlayerIdentity } from './player-identity';
+
 
 type PlayerTableProps = {
   players: FlatPlayer[];
@@ -200,30 +201,12 @@ export function PlayerTable({
                     ) : (
                       <div className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0" />
                     )}
-                    <div>
-                      <div className="flex items-center gap-1 md:gap-2">
-                          <button 
-                              onClick={() => onOpenPlayerDetail(flatPlayer)}
-                              className="font-medium text-sm md:text-base hover:underline text-left"
-                          >
-                              {player.name}
-                          </button>
-                          {hasTrainingBuild && (
-                              <TooltipProvider>
-                                  <Tooltip>
-                                      <TooltipTrigger>
-                                          <NotebookPen className="h-4 w-4 text-accent" />
-                                      </TooltipTrigger>
-                                      <TooltipContent><p>Build de Entrenamiento Guardada</p></TooltipContent>
-                                  </Tooltip>
-                              </TooltipProvider>
-                          )}
-                          <PerformanceBadges performance={performance} className="hidden md:flex" />
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {card.name} {card.team && card.team !== 'Sin Equipo' && `- ${card.team}`}
-                      </div>
-                    </div>
+                    <PlayerIdentity
+                        player={player}
+                        card={card}
+                        hasTrainingBuild={hasTrainingBuild}
+                        onOpenPlayerDetail={() => onOpenPlayerDetail(flatPlayer)}
+                    />
                   </div>
                 </TableCell>
                 <TableCell className="hidden md:table-cell space-y-1">
@@ -277,6 +260,7 @@ export function PlayerTable({
                                   nationality: player.nationality,
                                   cardName: card.name,
                                   position: position,
+                                  cardStyle: card.cardStyle,
                               })}
                           >
                               <PlusCircle className="h-5 w-5 md:h-4 md:w-4 text-primary/80 hover:text-primary" />

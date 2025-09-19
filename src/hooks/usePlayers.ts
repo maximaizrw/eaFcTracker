@@ -45,6 +45,7 @@ export function usePlayers() {
                     league: card.league || 'Sin Liga',
                     team: card.team || 'Sin Equipo',
                     imageUrl: card.imageUrl || '',
+                    cardStyle: card.cardStyle || 'gold-common',
                     ratingsByPosition: card.ratingsByPosition || {},
                     trainingBuilds: card.trainingBuilds || {}
                 })),
@@ -79,7 +80,7 @@ export function usePlayers() {
   }, [toast]);
 
   const addRating = async (values: AddRatingFormValues) => {
-    const { playerName, nationality, cardName, position, rating, league, team, role } = values;
+    const { playerName, nationality, cardName, position, rating, league, team, role, cardStyle } = values;
     let { playerId } = values;
 
     if (!db) {
@@ -117,13 +118,15 @@ export function usePlayers() {
           card.ratingsByPosition[position]!.push(newRating);
           card.league = league || card.league || 'Sin Liga';
           card.team = team || card.team || 'Sin Equipo';
+          card.cardStyle = cardStyle || card.cardStyle || 'gold-common';
         } else {
           card = { 
               id: uuidv4(), 
               name: cardName, 
               league: league || 'Sin Liga',
               team: team || 'Sin Equipo',
-              imageUrl: '', 
+              imageUrl: '',
+              cardStyle: cardStyle || 'gold-common',
               ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
           };
@@ -144,7 +147,8 @@ export function usePlayers() {
               name: cardName, 
               league: league || 'Sin Liga',
               team: team || 'Sin Equipo',
-              imageUrl: '', 
+              imageUrl: '',
+              cardStyle: cardStyle || 'gold-common',
               ratingsByPosition: { [position]: [newRating] },
               trainingBuilds: {}
           }],
@@ -174,6 +178,7 @@ export function usePlayers() {
           cardToUpdate.league = values.league || 'Sin Liga';
           cardToUpdate.team = values.team || 'Sin Equipo';
           cardToUpdate.imageUrl = values.imageUrl || '';
+          cardToUpdate.cardStyle = values.cardStyle || 'gold-common';
           
           await updateDoc(playerRef, { cards: newCards });
           toast({ title: "Carta Actualizada", description: "Los datos de la carta se han actualizado." });

@@ -47,14 +47,15 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import type { Player, Position, League, Role, Nationality } from "@/lib/types";
-import { positions, leagues, positionRoles, nationalities } from "@/lib/types";
+import type { Player, Position, League, Role, Nationality, CardStyle } from "@/lib/types";
+import { positions, leagues, positionRoles, nationalities, cardStyles } from "@/lib/types";
 
 const formSchema = z.object({
   playerId: z.string().optional(),
   playerName: z.string().min(2, "El nombre del jugador debe tener al menos 2 caracteres."),
   nationality: z.enum(nationalities),
   cardName: z.string().min(2, "El nombre de la carta debe tener al menos 2 caracteres."),
+  cardStyle: z.enum(cardStyles).optional(),
   position: z.enum(positions),
   league: z.enum(leagues).optional(),
   team: z.string().optional(),
@@ -84,6 +85,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
       playerName: "",
       nationality: "Sin Nacionalidad",
       cardName: "Carta Base",
+      cardStyle: "gold-common",
       position: "ST",
       league: "Sin Liga",
       team: "Sin Equipo",
@@ -106,6 +108,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
         playerName: '',
         nationality: 'Sin Nacionalidad',
         cardName: 'Carta Base',
+        cardStyle: 'gold-common',
         position: 'ST' as Position,
         league: 'Sin Liga' as League,
         team: 'Sin Equipo',
@@ -139,6 +142,7 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
     if (card) {
       if (card.league) form.setValue('league', card.league);
       if (card.team) form.setValue('team', card.team);
+      if (card.cardStyle) form.setValue('cardStyle', card.cardStyle);
     }
      // Reset role if position changes and current role is not valid for the new position
     const currentRole = form.getValues('role');
@@ -314,6 +318,28 @@ export function AddRatingDialog({ open, onOpenChange, onAddRating, players, init
                       </Command>
                     </PopoverContent>
                   </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="cardStyle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de Carta</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={isQuickAdd}>
+                    <FormControl>
+                      <SelectTrigger className={cn(isQuickAdd && "text-muted-foreground")}>
+                        <SelectValue placeholder="Selecciona un tipo" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {cardStyles.map((style) => (
+                        <SelectItem key={style} value={style} className="capitalize">{style.replace('-', ' ')}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

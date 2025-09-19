@@ -1,63 +1,18 @@
-export type CardStyleInfo = {
-  id: string;
-  nameFragment: string;
-  tailwindClass: string; // This will now correspond to a CSS variable name
-};
 
-export const specialCardStyles: CardStyleInfo[] = [
-  // Rules should be ordered from most specific to least specific
-  {
-    id: 'potwEuroMar24',
-    nameFragment: "potw european club championship 21 mar '24",
-    tailwindClass: 'potw-euro-mar24',
-  },
-  {
-    id: 'potwClubIntl',
-    nameFragment: "potw club international cup",
-    tailwindClass: 'potw-club-intl',
-  },
-  {
-    id: 'tsubasa',
-    nameFragment: 'captain tsubasa collaboration campaign',
-    tailwindClass: 'tsubasa-pink',
-  },
-  {
-    id: 'spain2010',
-    nameFragment: 'spain 2010',
-    tailwindClass: 'spain-2010',
-  },
-  {
-    id: 'euroPotw',
-    nameFragment: "potw european club championship",
-    tailwindClass: 'potw-euro',
-  },
-  {
-    id: 'atalanta',
-    nameFragment: 'atalanta bc 96-97',
-    tailwindClass: 'atalanta-green',
-  },
-  {
-    id: 'genericPotw',
-    nameFragment: 'potw',
-    tailwindClass: 'potw-green',
-  },
-  {
-    id: 'startup',
-    nameFragment: 'startup campaign',
-    tailwindClass: 'startup-blue',
-  },
-];
+import type { CardStyle } from "./types";
 
-export const getCardStyle = (cardName: string): CardStyleInfo | null => {
-  if (!cardName) return null;
-  const cardNameLower = cardName.toLowerCase();
-  
-  // The loop ensures more specific rules (earlier in the array) are matched first.
-  for (const style of specialCardStyles) {
-    if (cardNameLower.includes(style.nameFragment)) {
-      return style;
-    }
-  }
-  
-  return null;
+// Maps card styles to their corresponding image URLs from futbin.
+// These images are the small icons representing the card type (gold, silver, special, etc.).
+export const cardStyleImages: Record<CardStyle, string> = {
+    'gold-rare': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/2.png',
+    'gold-common': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/1.png',
+    'silver-rare': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/5.png',
+    'silver-common': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/4.png',
+    'bronze-rare': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/8.png',
+    'bronze-common': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/7.png',
+    'totw': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/11.png', // Example for TOTW, might need adjustments
+    'tots': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/13.png', // Example for TOTS
+    'toty': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/12.png', // Example for TOTY
+    'hero': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/22.png', // Example for Hero
+    'icon': 'https://cdn3.futbin.com/content/fifa24/img/cards/tiny/9.png',   // Example for Icon
 };

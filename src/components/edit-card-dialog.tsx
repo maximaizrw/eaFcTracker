@@ -31,8 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { League } from "@/lib/types";
-import { leagues } from "@/lib/types";
+import type { League, CardStyle } from "@/lib/types";
+import { leagues, cardStyles } from "@/lib/types";
 
 const formSchema = z.object({
   playerId: z.string(),
@@ -41,6 +41,7 @@ const formSchema = z.object({
   league: z.enum(leagues).optional(),
   team: z.string().optional(),
   imageUrl: z.string().url("Debe ser una URL válida.").optional().or(z.literal('')),
+  cardStyle: z.enum(cardStyles).optional(),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -63,6 +64,7 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
           ...initialData,
           league: initialData.league || 'Sin Liga',
           team: initialData.team || 'Sin Equipo',
+          cardStyle: initialData.cardStyle || 'gold-common',
       });
     }
   }, [open, initialData, form]);
@@ -92,6 +94,28 @@ export function EditCardDialog({ open, onOpenChange, onEditCard, initialData }: 
                   <FormControl>
                     <Input placeholder="Ej: TOTY, Future Stars..." {...field} />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="cardStyle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tipo de Carta</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecciona un tipo" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {cardStyles.map((style) => (
+                        <SelectItem key={style} value={style} className="capitalize">{style.replace('-', ' ')}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

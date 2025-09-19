@@ -1,3 +1,4 @@
+
 import type { Player as PlayerType, PlayerCard as PlayerCardType, Position as PositionType } from './types';
 import * as z from "zod";
 
@@ -44,6 +45,9 @@ export const nationalities = [
 ] as const;
 export type Nationality = typeof nationalities[number];
 
+export const cardStyles = ['gold-rare', 'gold-common', 'silver-rare', 'silver-common', 'bronze-rare', 'bronze-common', 'icon', 'hero', 'totw', 'tots', 'toty'] as const;
+export type CardStyle = typeof cardStyles[number];
+
 
 export const trainingAttributes = [
     'shooting', 'passing', 'dribbling', 'dexterity', 
@@ -69,6 +73,7 @@ export type PlayerCard = {
   team?: string;
   league?: League;
   imageUrl?: string;
+  cardStyle?: CardStyle; // New field for card type
   ratingsByPosition: { [key in Position]?: Rating[] };
   trainingBuilds?: { [key in Position]?: TrainingBuild };
 };
@@ -90,6 +95,7 @@ export type AddRatingFormValues = {
     team?: string;
     rating: number;
     role?: Role;
+    cardStyle?: CardStyle;
 }
 
 export type EditCardFormValues = {
@@ -99,6 +105,7 @@ export type EditCardFormValues = {
     league?: League;
     team?: string;
     imageUrl?: string;
+    cardStyle?: CardStyle;
 };
 
 export type EditPlayerFormValues = {
