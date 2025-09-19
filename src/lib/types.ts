@@ -39,7 +39,7 @@ export type League = typeof leagues[number];
 // Nationalities
 export const nationalities = [
   'Sin Nacionalidad', 'Alemania', 'Argentina', 'Australia', 'Austria', 'Bélgica', 'Brasil', 'Burkina Faso', 'Colombia', 'Corea del Sur',
-  'Croacia', 'Dinamarca', 'Escocia', 'España', 'Estados Unidos', 'Francia', 'Gales', 'Inglaterra', 'Irlanda',
+  'Costa de Marfil', 'Croacia', 'Dinamarca', 'Escocia', 'España', 'Estados Unidos', 'Francia', 'Gales', 'Inglaterra', 'Irlanda',
   'Italia', 'Japón', 'Marruecos', 'México', 'Nigeria', 'Noruega', 'Países Bajos', 'Polonia', 'Portugal',
   'Senegal', 'Serbia', 'Suecia', 'Suiza', 'Turquía', 'Uruguay'
 ] as const;
@@ -180,4 +180,31 @@ export type FlatPlayer = {
   hasTrainingBuild: boolean;
 };
 
+// --- Ideal Team Generator Types ---
+export type FormationSlot = {
+  position: Position;
+  styles: CardStyle[];
+  top: number; // %
+  left: number; // %
+};
+
+export type FormationStats = {
+  id: string;
+  name: string;
+  creator?: string;
+  slots: FormationSlot[];
+};
+
+export type IdealTeamPlayer = {
+  player: PlayerType;
+  card: PlayerCardType;
+  position: Position;
+  average: number;
+  performance: PlayerPerformance;
+};
+
+export type IdealTeamSlot = {
+  starter: IdealTeamPlayer | null;
+  substitute: IdealTeamPlayer | null;
+};
     

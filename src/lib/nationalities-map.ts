@@ -14,6 +14,7 @@ export const nationalityToCountryCode: Record<Nationality, string | null> = {
   'Burkina Faso': 'BF',
   'Colombia': 'CO',
   'Corea del Sur': 'KR',
+  'Costa de Marfil': 'CI',
   'Croacia': 'HR',
   'Dinamarca': 'DK',
   'Escocia': 'GB-SCT', // Special case for Scotland within Great Britain
@@ -39,4 +40,3 @@ export const nationalityToCountryCode: Record<Nationality, string | null> = {
   'Turquía': 'TR',
   'Uruguay': 'UY',
 };
-
